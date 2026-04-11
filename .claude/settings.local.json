@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes xlsx-cli \"Банкет на 35 персон \\(2\\).xlsx\")",
+      "Bash(npx xlsx-cli:*)",
+      "Bash(python3 -c ':*)",
+      "Bash(python -c ':*)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --src-dir --use-npm --eslint --no-turbopack --no-import-alias)"
+    ]
+  }
+}
