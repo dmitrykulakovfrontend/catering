@@ -5,7 +5,12 @@
       "Bash(npx xlsx-cli:*)",
       "Bash(python3 -c ':*)",
       "Bash(python -c ':*)",
-      "Bash(npx create-next-app@latest . --typescript --tailwind --app --src-dir --use-npm --eslint --no-turbopack --no-import-alias)"
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --src-dir --use-npm --eslint --no-turbopack --no-import-alias)",
+      "Read(//c/tmp/**)",
+      "Read(//c/Users/atome/AppData/Local/Temp/**)",
+      "Bash(npm run:*)",
+      "Bash(gh --version)",
+      "Bash(vercel --version)"
     ]
   }
 }
