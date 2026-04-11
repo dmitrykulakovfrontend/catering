@@ -6,26 +6,22 @@ export default function WelcomeSection({ items }: { items: MenuItemType[] }) {
   const drinkItems = items.filter((i) => i.weightUnit === 'мл');
 
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-8 sm:py-10">
       {/* Section heading */}
-      <div className="mb-10 sm:mb-12 flex flex-col items-center text-center">
-        <div className="ornament-divider w-full max-w-md mb-6">
+      <div className="mb-5 sm:mb-6 flex flex-col items-center text-center">
+        <div className="ornament-divider w-full max-w-sm mb-4">
           <span className="ornament-diamond" />
         </div>
 
-        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-wine-700 tracking-tight">
+        <h2 className="font-serif text-xl sm:text-2xl font-bold text-wine-700 tracking-tight">
           Welcome зона
         </h2>
 
-        <p className="mt-3 text-sm text-neutral-400 max-w-md">
-          Встреча гостей с изысканными закусками и освежающими напитками
-        </p>
-
-        <div className="mt-4 h-0.5 w-12 rounded-full bg-gradient-to-r from-gold-400 to-gold-600" />
+        <div className="mt-2.5 h-0.5 w-10 rounded-full bg-gradient-to-r from-gold-400 to-gold-600" />
       </div>
 
       {/* Food items — compact horizontal cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {foodItems.map((item) => {
           const lineTotal = item.pricePerUnit * item.quantity;
           return (
@@ -37,7 +33,7 @@ export default function WelcomeSection({ items }: { items: MenuItemType[] }) {
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute bottom-1 left-1 rounded-full bg-white/90 backdrop-blur-sm px-2 py-0.5 text-[10px] font-medium text-wine-600 shadow-sm">
                   {item.weight} {item.weightUnit}
@@ -72,8 +68,8 @@ export default function WelcomeSection({ items }: { items: MenuItemType[] }) {
 
       {/* Drinks — distinctive styling */}
       {drinkItems.length > 0 && (
-        <div className="mt-10">
-          <h3 className="mb-5 text-center font-serif text-lg font-semibold text-wine-600">
+        <div className="mt-6">
+          <h3 className="mb-4 text-center font-serif text-base font-semibold text-wine-600">
             Напитки
           </h3>
 
@@ -89,7 +85,7 @@ export default function WelcomeSection({ items }: { items: MenuItemType[] }) {
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full bg-white/90 backdrop-blur-sm px-1.5 py-0.5 text-[9px] font-medium text-wine-600 shadow-sm whitespace-nowrap">
                       {item.weight} {item.weightUnit}

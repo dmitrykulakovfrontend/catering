@@ -18,32 +18,32 @@ export default function StatsSummary({ stats: s }: { stats: MenuStats }) {
   const totalItem = items.find((i) => i.accent)!;
 
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-8 sm:py-10">
       {/* Section heading */}
-      <div className="mb-10 sm:mb-12 flex flex-col items-center text-center">
-        <div className="ornament-divider w-full max-w-md mb-6">
+      <div className="mb-5 sm:mb-6 flex flex-col items-center text-center">
+        <div className="ornament-divider w-full max-w-sm mb-4">
           <span className="ornament-diamond" />
         </div>
 
-        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-wine-700 tracking-tight">
+        <h2 className="font-serif text-xl sm:text-2xl font-bold text-wine-700 tracking-tight">
           Расчёт стоимости
         </h2>
 
-        <div className="mt-4 h-0.5 w-12 rounded-full bg-gradient-to-r from-gold-400 to-gold-600" />
+        <div className="mt-2.5 h-0.5 w-10 rounded-full bg-gradient-to-r from-gold-400 to-gold-600" />
       </div>
 
       <div className="mx-auto max-w-4xl">
         {/* Stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {regularItems.map((item) => (
             <div
               key={item.label}
-              className="rounded-xl bg-white p-5 sm:p-6 shadow-[0_2px_16px_-4px_rgba(0,0,0,0.05)] border border-cream-dark/80 text-center"
+              className="rounded-xl bg-white p-4 shadow-[0_2px_16px_-4px_rgba(0,0,0,0.05)] border border-cream-dark/80 text-center"
             >
-              <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider leading-snug mb-3">
+              <p className="text-[10px] sm:text-xs font-medium text-neutral-400 uppercase tracking-wider leading-snug mb-2">
                 {item.label}
               </p>
-              <p className="font-serif text-xl sm:text-2xl font-bold text-wine-700 tabular-nums">
+              <p className="font-serif text-lg sm:text-xl font-bold text-wine-700 tabular-nums">
                 {item.value}
               </p>
             </div>
@@ -51,7 +51,7 @@ export default function StatsSummary({ stats: s }: { stats: MenuStats }) {
         </div>
 
         {/* Grand total — hero card */}
-        <div className="mt-6 sm:mt-8 relative overflow-hidden rounded-2xl bg-gradient-to-br from-wine-700 via-wine-600 to-wine-700 p-8 sm:p-10 text-center shadow-[0_8px_40px_-8px_rgba(90,37,44,0.35)]">
+        <div className="mt-4 sm:mt-5 relative overflow-hidden rounded-2xl bg-gradient-to-br from-wine-700 via-wine-600 to-wine-700 p-6 sm:p-8 text-center shadow-[0_8px_40px_-8px_rgba(90,37,44,0.35)]">
           {/* Decorative gold glow */}
           <div
             className="absolute inset-0 opacity-20"

@@ -14,18 +14,18 @@ export default function ServicesTable({
   }
 
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-8 sm:py-10">
       {/* Section heading */}
-      <div className="mb-10 sm:mb-12 flex flex-col items-center text-center">
-        <div className="ornament-divider w-full max-w-md mb-6">
+      <div className="mb-5 sm:mb-6 flex flex-col items-center text-center">
+        <div className="ornament-divider w-full max-w-sm mb-4">
           <span className="ornament-diamond" />
         </div>
 
-        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-wine-700 tracking-tight">
+        <h2 className="font-serif text-xl sm:text-2xl font-bold text-wine-700 tracking-tight">
           Услуги
         </h2>
 
-        <div className="mt-4 h-0.5 w-12 rounded-full bg-gradient-to-r from-gold-400 to-gold-600" />
+        <div className="mt-2.5 h-0.5 w-10 rounded-full bg-gradient-to-r from-gold-400 to-gold-600" />
       </div>
 
       {/* Services list */}
