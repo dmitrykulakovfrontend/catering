@@ -1,15 +1,39 @@
-import { MenuStats } from '@/types';
-import { formatPrice, formatWeight, formatVolume } from '@/lib/calculations';
+import { MenuStats } from "@/types";
+import { formatPrice, formatWeight, formatVolume } from "@/lib/calculations";
 
 const stats = (s: MenuStats) => [
-  { label: 'Стоимость меню', value: formatPrice(s.menuCost), accent: false },
-  { label: 'Стоимость на человека', value: formatPrice(s.costPerPerson), accent: false },
-  { label: 'Еды на человека', value: formatWeight(s.foodPerPerson), accent: false },
-  { label: 'Напитков на человека', value: formatVolume(s.drinksPerPerson), accent: false },
-  { label: 'Общий вес еды', value: formatWeight(s.totalFoodWeight), accent: false },
-  { label: 'Общий объем напитков', value: formatVolume(s.totalDrinkVolume), accent: false },
-  { label: 'Стоимость услуг', value: formatPrice(s.servicesCost), accent: false },
-  { label: 'Общая сумма', value: formatPrice(s.grandTotal), accent: true },
+  { label: "Стоимость меню", value: formatPrice(s.menuCost), accent: false },
+  {
+    label: "Стоимость на человека",
+    value: formatPrice(s.costPerPerson),
+    accent: false,
+  },
+  {
+    label: "Еды на человека",
+    value: formatWeight(s.foodPerPerson),
+    accent: false,
+  },
+  {
+    label: "Напитков на человека",
+    value: formatVolume(s.drinksPerPerson),
+    accent: false,
+  },
+  {
+    label: "Общий вес еды",
+    value: formatWeight(s.totalFoodWeight),
+    accent: false,
+  },
+  {
+    label: "Общий объем напитков",
+    value: formatVolume(s.totalDrinkVolume),
+    accent: false,
+  },
+  {
+    label: "Стоимость услуг",
+    value: formatPrice(s.servicesCost),
+    accent: false,
+  },
+  { label: "Общая сумма", value: formatPrice(s.grandTotal), accent: true },
 ];
 
 export default function StatsSummary({ stats: s }: { stats: MenuStats }) {
@@ -34,11 +58,11 @@ export default function StatsSummary({ stats: s }: { stats: MenuStats }) {
 
       <div className="mx-auto max-w-4xl">
         {/* Stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {regularItems.map((item) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {regularItems.map((item, i) => (
             <div
               key={item.label}
-              className="rounded-xl bg-white p-4 shadow-[0_2px_16px_-4px_rgba(0,0,0,0.05)] border border-cream-dark/80 text-center"
+              className={`rounded-xl ${i === regularItems.length - 1 ? "md:col-span-3 col-span-2" : ""} bg-white p-4 shadow-[0_2px_16px_-4px_rgba(0,0,0,0.05)] border border-cream-dark/80 text-center`}
             >
               <p className="text-[10px] sm:text-xs font-medium text-neutral-400 uppercase tracking-wider leading-snug mb-2">
                 {item.label}
@@ -57,7 +81,7 @@ export default function StatsSummary({ stats: s }: { stats: MenuStats }) {
             className="absolute inset-0 opacity-20"
             style={{
               background:
-                'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.4) 0%, transparent 70%)',
+                "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.4) 0%, transparent 70%)",
             }}
           />
 
