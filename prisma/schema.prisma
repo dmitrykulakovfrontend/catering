@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─── CATALOG ────────────────────────────────────────────────
+
+model DishCategory {
+  id     String @id @default(cuid())
+  name   String @unique
+  order  Int    @default(0)
+  dishes Dish[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Dish {
+  id           String       @id @default(cuid())
+  name         String
+  description  String       @default("")
+  weight       Float
+  weightUnit   String       @default("г")
+  defaultPrice Float
+  image        String       @default("")
+  categoryId   String
+  category     DishCategory @relation(fields: [categoryId], references: [id])
+
+  quoteItems QuoteItem[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ServiceTemplate {
+  id          String  @id @default(cuid())
+  name        String
+  defaultPrice Float
+  isPerPerson Boolean @default(false)
+  order       Int     @default(0)
+
+  quoteServices QuoteService[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ─── QUOTES ─────────────────────────────────────────────────
+
+model Quote {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  eventTitle  String
+  eventTime   String
+  persons     Int
+  clientName  String
+  clientPhone String   @default("")
+  status      String   @default("draft")
+  notes       String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sections QuoteSection[]
+  services QuoteService[]
+}
+
+model QuoteSection {
+  id      String @id @default(cuid())
+  quoteId String
+  quote   Quote  @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  title   String
+  type    String @default("banquet")
+  order   Int    @default(0)
+
+  items QuoteItem[]
+}
+
+model QuoteItem {
+  id           String       @id @default(cuid())
+  sectionId    String
+  section      QuoteSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  dishId       String?
+  dish         Dish?        @relation(fields: [dishId], references: [id], onDelete: SetNull)
+  name         String
+  description  String       @default("")
+  weight       Float
+  weightUnit   String       @default("г")
+  quantity     Int
+  pricePerUnit Float
+  image        String       @default("")
+  order        Int          @default(0)
+}
+
+model QuoteService {
+  id                String           @id @default(cuid())
+  quoteId           String
+  quote             Quote            @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  serviceTemplateId String?
+  serviceTemplate   ServiceTemplate? @relation(fields: [serviceTemplateId], references: [id], onDelete: SetNull)
+  name              String
+  price             Float
+  quantity          Int              @default(1)
+  isPerPerson       Boolean          @default(false)
+  order             Int              @default(0)
+}

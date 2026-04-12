@@ -3,7 +3,7 @@ export interface MenuItem {
   name: string;
   description: string;
   weight: number;
-  weightUnit: 'г' | 'мл';
+  weightUnit: string;
   quantity: number;
   pricePerUnit: number;
   image: string;

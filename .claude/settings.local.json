@@ -10,7 +10,10 @@
       "Read(//c/Users/atome/AppData/Local/Temp/**)",
       "Bash(npm run:*)",
       "Bash(gh --version)",
-      "Bash(vercel --version)"
+      "Bash(vercel --version)",
+      "Bash(xargs grep:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)"
     ]
   }
 }
