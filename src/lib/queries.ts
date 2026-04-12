@@ -42,7 +42,6 @@ export async function getAllQuotes() {
       persons: true,
       clientName: true,
       clientPhone: true,
-      status: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -81,7 +80,6 @@ export async function getQuoteBySlug(slug: string) {
 
 export async function getAllPublishedSlugs() {
   return prisma.quote.findMany({
-    where: { status: { not: 'draft' } },
     select: { slug: true },
   })
 }

@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { toast } from 'sonner'
-import StatusBadge from './StatusBadge'
 import { deleteQuote } from '@/lib/actions'
 import { useState } from 'react'
 import DeleteConfirmDialog from './DeleteConfirmDialog'
@@ -13,7 +12,6 @@ interface QuoteSummary {
   eventTitle: string
   clientName: string
   persons: number
-  status: string
   updatedAt: Date
 }
 
@@ -60,7 +58,6 @@ export default function QuoteList({ quotes }: { quotes: QuoteSummary[] }) {
               <th className="px-6 py-3 font-medium text-gray-500">Название</th>
               <th className="px-6 py-3 font-medium text-gray-500">Клиент</th>
               <th className="px-6 py-3 font-medium text-gray-500">Персон</th>
-              <th className="px-6 py-3 font-medium text-gray-500">Статус</th>
               <th className="px-6 py-3 font-medium text-gray-500">Дата</th>
               <th className="px-6 py-3 font-medium text-gray-500"></th>
             </tr>
@@ -78,9 +75,6 @@ export default function QuoteList({ quotes }: { quotes: QuoteSummary[] }) {
                 </td>
                 <td className="px-6 py-4 text-gray-600">{q.clientName}</td>
                 <td className="px-6 py-4 text-gray-600">{q.persons}</td>
-                <td className="px-6 py-4">
-                  <StatusBadge status={q.status} />
-                </td>
                 <td className="px-6 py-4 text-gray-500">
                   {new Date(q.updatedAt).toLocaleDateString('ru-RU')}
                 </td>

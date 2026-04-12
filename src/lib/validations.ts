@@ -57,7 +57,6 @@ export const quoteSchema = z.object({
   persons: z.number().int().positive('Количество персон должно быть положительным'),
   clientName: z.string().min(1, 'Имя клиента обязательно'),
   clientPhone: z.string().default(''),
-  status: z.enum(['draft', 'sent', 'confirmed', 'archived']).default('draft'),
   notes: z.string().default(''),
   slug: z.string().min(1),
   sections: z.array(quoteSectionSchema),

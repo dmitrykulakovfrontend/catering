@@ -70,7 +70,6 @@ interface QuoteEditorProps {
     persons: number
     clientName: string
     clientPhone: string
-    status: string
     notes: string
     slug: string
     sections: QuoteSection[]
@@ -94,7 +93,6 @@ export default function QuoteEditor({
     persons: initial?.persons || 30,
     clientName: initial?.clientName || '',
     clientPhone: initial?.clientPhone || '',
-    status: initial?.status || 'draft',
     notes: initial?.notes || '',
     slug: initial?.slug || '',
   })
@@ -253,7 +251,6 @@ export default function QuoteEditor({
     try {
       const data: QuoteFormData = {
         ...form,
-        status: form.status as 'draft' | 'sent' | 'confirmed' | 'archived',
         sections: sections.map((s, si) => ({
           ...s,
           id: s.id,
@@ -344,20 +341,7 @@ export default function QuoteEditor({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Статус</label>
-            <select
-              value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value })}
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-wine-500 focus:ring-1 focus:ring-wine-500/20 focus:outline-none"
-            >
-              <option value="draft">Черновик</option>
-              <option value="sent">Отправлено</option>
-              <option value="confirmed">Подтверждено</option>
-              <option value="archived">Архив</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Slug (URL)</label>
+            <label className="block text-sm font-medium text-gray-700">Ссылка (URL)</label>
             <input
               type="text"
               required
@@ -572,16 +556,6 @@ export default function QuoteEditor({
           </span>
         </div>
         <div className="flex gap-3">
-          {form.slug && (
-            <a
-              href={`/quote/${form.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              Предпросмотр
-            </a>
-          )}
           <button
             onClick={handleSave}
             disabled={saving}

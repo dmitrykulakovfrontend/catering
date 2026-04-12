@@ -23,7 +23,6 @@ export default async function EditQuotePage({
     persons: quote.persons,
     clientName: quote.clientName,
     clientPhone: quote.clientPhone,
-    status: quote.status,
     notes: quote.notes,
     slug: quote.slug,
     sections: quote.sections.map((s) => ({

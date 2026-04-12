@@ -38,7 +38,7 @@ export default async function QuotePage({
   const { slug } = await params
   const quote = await getQuoteBySlug(slug)
 
-  if (!quote || quote.status === 'draft') {
+  if (!quote) {
     notFound()
   }
 

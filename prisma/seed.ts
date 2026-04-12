@@ -118,7 +118,6 @@ async function main() {
       persons: 30,
       clientName: 'Владимир Деев',
       clientPhone: '+79991111111',
-      status: 'sent',
       sections: {
         create: [
           {

@@ -56,7 +56,6 @@ model Quote {
   persons     Int
   clientName  String
   clientPhone String   @default("")
-  status      String   @default("draft")
   notes       String   @default("")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
