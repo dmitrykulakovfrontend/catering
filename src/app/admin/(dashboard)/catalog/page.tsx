@@ -9,10 +9,10 @@ export default async function CatalogPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-2xl font-bold text-gray-900">
+          <h1 className="font-sans text-2xl font-bold text-neutral-900">
             Каталог блюд
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-neutral-500">
             Библиотека блюд для составления банкетов
           </p>
         </div>

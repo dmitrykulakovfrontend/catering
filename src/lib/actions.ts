@@ -114,9 +114,10 @@ export async function saveQuote(data: QuoteFormData, id?: string) {
     eventTitle: parsed.eventTitle,
     eventTime: parsed.eventTime,
     persons: parsed.persons,
-    clientName: parsed.clientName,
-    clientPhone: parsed.clientPhone,
+    managerName: parsed.managerName,
+    managerPhone: parsed.managerPhone,
     notes: parsed.notes,
+    validUntil: parsed.validUntil ? new Date(parsed.validUntil) : null,
     slug: parsed.slug,
   }
 

@@ -10,7 +10,7 @@ interface QuoteSummary {
   id: string
   slug: string
   eventTitle: string
-  clientName: string
+  managerName: string
   persons: number
   updatedAt: Date
 }
@@ -37,11 +37,11 @@ export default function QuoteList({ quotes }: { quotes: QuoteSummary[] }) {
 
   if (quotes.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-gray-300 bg-white py-16 text-center">
-        <p className="text-sm text-gray-500">Нет банкетов</p>
+      <div className="rounded-xl border border-dashed border-neutral-200 bg-white py-16 text-center">
+        <p className="text-sm text-neutral-500">Нет банкетов</p>
         <Link
           href="/admin/quotes/new"
-          className="mt-3 inline-block rounded-lg bg-wine-700 px-4 py-2 text-sm font-medium text-white hover:bg-wine-600"
+          className="mt-3 inline-block rounded-lg bg-royal-500 px-4 py-2 text-sm font-medium text-white hover:bg-royal-600"
         >
           Создать первый банкет
         </Link>
@@ -51,45 +51,45 @@ export default function QuoteList({ quotes }: { quotes: QuoteSummary[] }) {
 
   return (
     <>
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-gray-100 bg-gray-50/60">
+          <thead className="border-b border-neutral-100 bg-neutral-50">
             <tr>
-              <th className="px-6 py-3 font-medium text-gray-500">Название</th>
-              <th className="px-6 py-3 font-medium text-gray-500">Клиент</th>
-              <th className="px-6 py-3 font-medium text-gray-500">Персон</th>
-              <th className="px-6 py-3 font-medium text-gray-500">Дата</th>
-              <th className="px-6 py-3 font-medium text-gray-500"></th>
+              <th className="px-6 py-3 font-medium text-neutral-500">Название</th>
+              <th className="px-6 py-3 font-medium text-neutral-500">Менеджер</th>
+              <th className="px-6 py-3 font-medium text-neutral-500">Персон</th>
+              <th className="px-6 py-3 font-medium text-neutral-500">Дата</th>
+              <th className="px-6 py-3 font-medium text-neutral-500"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-neutral-100">
             {quotes.map((q) => (
-              <tr key={q.id} className="hover:bg-gold-50/40 transition-colors">
+              <tr key={q.id} className="hover:bg-royal-50/40 transition-colors">
                 <td className="px-6 py-4">
                   <Link
                     href={`/admin/quotes/${q.id}/edit`}
-                    className="font-medium text-gray-900 hover:text-wine-700"
+                    className="font-medium text-neutral-900 hover:text-royal-500"
                   >
                     {q.eventTitle}
                   </Link>
                 </td>
-                <td className="px-6 py-4 text-gray-600">{q.clientName}</td>
-                <td className="px-6 py-4 text-gray-600">{q.persons}</td>
-                <td className="px-6 py-4 text-gray-500">
+                <td className="px-6 py-4 text-neutral-600">{q.managerName}</td>
+                <td className="px-6 py-4 text-neutral-600">{q.persons}</td>
+                <td className="px-6 py-4 text-neutral-500">
                   {new Date(q.updatedAt).toLocaleDateString('ru-RU')}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => copyLink(q.slug)}
-                      className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gold-700 hover:bg-gold-50"
+                      className="rounded-md px-2.5 py-1.5 text-xs font-medium text-royal-500 hover:bg-royal-50"
                       title="Скопировать ссылку"
                     >
                       Ссылка
                     </button>
                     <Link
                       href={`/admin/quotes/${q.id}/edit`}
-                      className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100"
+                      className="rounded-md px-2.5 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100"
                     >
                       Изменить
                     </Link>

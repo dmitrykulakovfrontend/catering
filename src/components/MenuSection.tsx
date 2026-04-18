@@ -5,25 +5,26 @@ export default function MenuSection({
   children,
 }: {
   title: string;
+  categoryTotal?: number;
   children: ReactNode;
 }) {
   return (
-    <section className="py-8 sm:py-10">
-      {/* Section heading with ornamental divider */}
-      <div className="mb-5 sm:mb-6 flex flex-col items-center text-center">
-        <div className="ornament-divider w-full max-w-sm mb-4">
-          <span className="ornament-diamond" />
-        </div>
-
-        <h2 className="font-serif text-xl sm:text-2xl font-bold text-wine-700 tracking-tight">
-          {title}
-        </h2>
-
-        <div className="mt-2.5 h-0.5 w-10 rounded-full bg-gradient-to-r from-gold-400 to-gold-600" />
+    <section className="mb-16 sm:mb-20">
+      {/* Ornamental divider */}
+      <div className="ornament-divider mb-5">
+        <span className="ornament-diamond" />
       </div>
 
-      {/* Items — 1 col mobile, 2 col desktop for horizontal cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+      {/* Category title */}
+      <div className="text-center mb-8 sm:mb-10">
+        <h2 className="font-serif text-[28px] sm:text-4xl font-bold text-neutral-900 tracking-tight leading-none">
+          {title}
+        </h2>
+        <div className="mx-auto mt-3 w-8 h-[2px] bg-royal-500 rounded-full" />
+      </div>
+
+      {/* 2-column card grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
         {children}
       </div>
     </section>

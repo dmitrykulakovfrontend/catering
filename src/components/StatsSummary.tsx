@@ -1,113 +1,114 @@
-import { MenuStats } from "@/types";
-import { formatPrice, formatWeight, formatVolume } from "@/lib/calculations";
+import { MenuStats } from '@/types';
+import { formatPrice, formatWeight, formatVolume } from '@/lib/calculations';
 
-const stats = (s: MenuStats) => [
-  { label: "Стоимость меню", value: formatPrice(s.menuCost), accent: false },
-  {
-    label: "Стоимость на человека",
-    value: formatPrice(s.costPerPerson),
-    accent: false,
-  },
-  {
-    label: "Еды на человека",
-    value: formatWeight(s.foodPerPerson),
-    accent: false,
-  },
-  {
-    label: "Напитков на человека",
-    value: formatVolume(s.drinksPerPerson),
-    accent: false,
-  },
-  {
-    label: "Общий вес еды",
-    value: formatWeight(s.totalFoodWeight),
-    accent: false,
-  },
-  {
-    label: "Общий объем напитков",
-    value: formatVolume(s.totalDrinkVolume),
-    accent: false,
-  },
-  {
-    label: "Стоимость услуг",
-    value: formatPrice(s.servicesCost),
-    accent: false,
-  },
-  { label: "Общая сумма", value: formatPrice(s.grandTotal), accent: true },
-];
-
-export default function StatsSummary({ stats: s }: { stats: MenuStats }) {
-  const items = stats(s);
-  const regularItems = items.filter((i) => !i.accent);
-  const totalItem = items.find((i) => i.accent)!;
+export default function StatsSummary({
+  stats,
+  managerPhone,
+}: {
+  stats: MenuStats;
+  managerPhone?: string;
+}) {
+  const statCards = [
+    { label: 'Стоимость меню', value: formatPrice(stats.menuCost) },
+    { label: 'На человека', value: formatPrice(stats.costPerPerson) },
+    { label: 'Еды на человека', value: formatWeight(stats.foodPerPerson) },
+    { label: 'Напитков на человека', value: formatVolume(stats.drinksPerPerson) },
+    { label: 'Общий вес еды', value: formatWeight(stats.totalFoodWeight) },
+    { label: 'Общий объем напитков', value: formatVolume(stats.totalDrinkVolume) },
+  ];
 
   return (
-    <section className="py-8 sm:py-10">
-      {/* Section heading */}
-      <div className="mb-5 sm:mb-6 flex flex-col items-center text-center">
-        <div className="ornament-divider w-full max-w-sm mb-4">
+    <section className="py-12 sm:py-16">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+        {/* Ornamental divider */}
+        <div className="ornament-divider mb-5">
           <span className="ornament-diamond" />
         </div>
 
-        <h2 className="font-serif text-xl sm:text-2xl font-bold text-wine-700 tracking-tight">
-          Расчёт стоимости
-        </h2>
+        {/* Title */}
+        <div className="text-center mb-8 sm:mb-10">
+          <h2 className="font-serif text-[28px] sm:text-4xl font-bold text-neutral-900 tracking-tight leading-none">
+            Расчёт стоимости
+          </h2>
+          <div className="mx-auto mt-3 w-8 h-[2px] bg-royal-500 rounded-full" />
+        </div>
 
-        <div className="mt-2.5 h-0.5 w-10 rounded-full bg-gradient-to-r from-gold-400 to-gold-600" />
-      </div>
-
-      <div className="mx-auto max-w-4xl">
-        {/* Stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {regularItems.map((item, i) => (
+        {/* Stat cards grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-4">
+          {statCards.map((card) => (
             <div
-              key={item.label}
-              className={`rounded-xl ${i === regularItems.length - 1 ? "md:col-span-3 col-span-2" : ""} bg-white p-4 shadow-[0_2px_16px_-4px_rgba(0,0,0,0.05)] border border-cream-dark/80 text-center`}
+              key={card.label}
+              className="card-surface relative px-4 py-5 sm:px-5 sm:py-6 text-center overflow-hidden"
             >
-              <p className="text-[10px] sm:text-xs font-medium text-neutral-400 uppercase tracking-wider leading-snug mb-2">
-                {item.label}
+              {/* Top accent line */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-royal-500/40 to-transparent" />
+              <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.1em] text-neutral-400 mb-2">
+                {card.label}
               </p>
-              <p className="font-serif text-lg sm:text-xl font-bold text-wine-700 tabular-nums">
-                {item.value}
+              <p className="text-xl sm:text-2xl font-bold text-neutral-900 tabular-nums tracking-tight">
+                {card.value}
               </p>
             </div>
           ))}
         </div>
 
-        {/* Grand total — hero card */}
-        <div className="mt-4 sm:mt-5 relative overflow-hidden rounded-2xl bg-gradient-to-br from-wine-700 via-wine-600 to-wine-700 p-6 sm:p-8 text-center shadow-[0_8px_40px_-8px_rgba(90,37,44,0.35)]">
-          {/* Decorative gold glow */}
+        {/* Services cost card */}
+        <div className="flex justify-center mb-8 sm:mb-10">
+          <div className="card-surface relative px-10 sm:px-14 py-5 sm:py-6 text-center overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-royal-500/40 to-transparent" />
+            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.1em] text-neutral-400 mb-2">
+              Стоимость услуг
+            </p>
+            <p className="text-xl sm:text-2xl font-bold text-neutral-900 tabular-nums tracking-tight">
+              {formatPrice(stats.servicesCost)}
+            </p>
+          </div>
+        </div>
+
+        {/* Grand total banner */}
+        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-royal-800 via-royal-700 to-royal-600 px-6 py-10 sm:py-12 text-center">
+          {/* Subtle pattern overlay */}
           <div
-            className="absolute inset-0 opacity-20"
+            className="absolute inset-0 opacity-[0.04]"
             style={{
-              background:
-                "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.4) 0%, transparent 70%)",
+              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundSize: '24px 24px',
             }}
           />
 
-          {/* Diamond ornaments */}
-          <div className="relative z-10 flex flex-col items-center">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-px w-10 bg-gradient-to-r from-transparent to-gold-400/50" />
-              <div className="h-2 w-2 rotate-45 bg-gold-400/70" />
-              <div className="h-px w-10 bg-gradient-to-l from-transparent to-gold-400/50" />
+          <div className="relative">
+            {/* Top ornament */}
+            <div className="flex items-center justify-center gap-3 mb-5">
+              <div className="w-12 sm:w-16 h-px bg-white/25" />
+              <span className="inline-block w-2 h-2 bg-white/60 rotate-45" />
+              <div className="w-12 sm:w-16 h-px bg-white/25" />
             </div>
 
-            <p className="text-sm font-medium text-gold-200/70 uppercase tracking-widest mb-3">
-              {totalItem.label}
+            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.25em] text-royal-200/70 mb-3">
+              Общая сумма
+            </p>
+            <p className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tabular-nums tracking-tight font-serif leading-none">
+              {formatPrice(stats.grandTotal)}
             </p>
 
-            <p className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-white tabular-nums tracking-tight">
-              {totalItem.value}
-            </p>
-
-            <div className="flex items-center gap-3 mt-5">
-              <div className="h-px w-10 bg-gradient-to-r from-transparent to-gold-400/50" />
-              <div className="h-2 w-2 rotate-45 bg-gold-400/70" />
-              <div className="h-px w-10 bg-gradient-to-l from-transparent to-gold-400/50" />
+            {/* Bottom ornament */}
+            <div className="flex items-center justify-center gap-3 mt-6">
+              <div className="w-12 sm:w-16 h-px bg-white/25" />
+              <span className="inline-block w-2 h-2 bg-white/60 rotate-45" />
+              <div className="w-12 sm:w-16 h-px bg-white/25" />
             </div>
           </div>
         </div>
+
+        {/* CTA */}
+        {managerPhone && (
+          <a
+            href={`tel:${managerPhone.replace(/\s/g, '')}`}
+            className="mt-6 block w-full max-w-sm mx-auto rounded-xl bg-royal-500 py-3.5 text-center text-[15px] font-semibold text-white hover:bg-royal-600 active:bg-royal-700 transition-colors"
+          >
+            Заказать
+          </a>
+        )}
       </div>
     </section>
   );

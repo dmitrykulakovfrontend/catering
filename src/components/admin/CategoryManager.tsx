@@ -29,7 +29,7 @@ export default function CategoryManager() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="rounded-lg border border-dashed border-gray-300 px-4 py-2 text-sm font-medium text-gray-600 hover:border-wine-300 hover:text-wine-700"
+        className="rounded-lg border border-dashed border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-600 hover:border-royal-500 hover:text-royal-500"
       >
         + Добавить категорию
       </button>
@@ -44,19 +44,19 @@ export default function CategoryManager() {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Название категории"
-        className="rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-wine-500 focus:ring-1 focus:ring-wine-500/20 focus:outline-none"
+        className="rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
       />
       <button
         type="submit"
         disabled={saving}
-        className="rounded-lg bg-wine-700 px-4 py-2 text-sm font-medium text-white hover:bg-wine-600 disabled:opacity-60"
+        className="rounded-lg bg-royal-500 px-4 py-2 text-sm font-medium text-white hover:bg-royal-600 disabled:opacity-60"
       >
         Создать
       </button>
       <button
         type="button"
         onClick={() => { setOpen(false); setName('') }}
-        className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+        className="rounded-lg border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-50"
       >
         Отмена
       </button>

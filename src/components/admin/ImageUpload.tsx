@@ -39,12 +39,12 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
   return (
     <div className="space-y-2">
       {value && (
-        <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-gray-200">
+        <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-neutral-200">
           <img src={value} alt="" className="h-full w-full object-cover" />
         </div>
       )}
       <div className="flex items-center gap-2">
-        <label className="cursor-pointer rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">
+        <label className="cursor-pointer rounded-lg border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-50">
           {uploading ? 'Загрузка...' : 'Загрузить фото'}
           <input
             type="file"
@@ -60,7 +60,7 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="URL изображения"
-        className="block w-full rounded-lg border border-gray-300 px-3 py-1.5 text-xs shadow-sm focus:border-wine-500 focus:ring-1 focus:ring-wine-500/20 focus:outline-none"
+        className="block w-full rounded-lg border border-neutral-200 px-3 py-1.5 text-xs shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
       />
     </div>
   )

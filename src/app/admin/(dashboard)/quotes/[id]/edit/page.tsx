@@ -21,9 +21,10 @@ export default async function EditQuotePage({
     eventTitle: quote.eventTitle,
     eventTime: quote.eventTime,
     persons: quote.persons,
-    clientName: quote.clientName,
-    clientPhone: quote.clientPhone,
+    managerName: quote.managerName,
+    managerPhone: quote.managerPhone,
     notes: quote.notes,
+    validUntil: quote.validUntil ? quote.validUntil.toISOString().split('T')[0] : null,
     slug: quote.slug,
     sections: quote.sections.map((s) => ({
       id: s.id,
@@ -55,11 +56,11 @@ export default async function EditQuotePage({
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-serif text-2xl font-bold text-gray-900">
+        <h1 className="font-sans text-2xl font-bold text-neutral-900">
           Редактирование банкета
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {quote.eventTitle} — {quote.clientName}
+        <p className="mt-1 text-sm text-neutral-500">
+          {quote.eventTitle} — {quote.managerName}
         </p>
       </div>
 

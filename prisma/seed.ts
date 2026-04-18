@@ -116,8 +116,8 @@ async function main() {
       eventTitle: 'Банкет на 30 персон',
       eventTime: 'c 11:00 до 22:30',
       persons: 30,
-      clientName: 'Владимир Деев',
-      clientPhone: '+79991111111',
+      managerName: 'Владимир Деев',
+      managerPhone: '+79991111111',
       sections: {
         create: [
           {

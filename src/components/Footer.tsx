@@ -1,39 +1,44 @@
-export default function Footer() {
+export default function Footer({ managerPhone }: { managerPhone?: string }) {
   return (
-    <footer className="relative bg-wine-700 text-white overflow-hidden">
-      {/* Subtle pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23C9A84C' stroke-width='0.5'/%3E%3C/svg%3E")`,
-          backgroundSize: '60px 60px',
-        }}
-      />
+    <>
+      <footer className="py-14 sm:py-20">
+        <div className="mx-auto max-w-lg px-4 text-center">
+          <h3 className="font-serif text-xl sm:text-2xl font-bold text-neutral-900 mb-2">
+            Остались вопросы?
+          </h3>
+          <p className="text-sm text-neutral-400 mb-8">
+            Свяжитесь с нами и мы ответим на любые вопросы
+          </p>
 
-      <div className="relative z-10 flex flex-col items-center px-6 py-16 sm:py-20">
-        {/* Ornament */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-px w-8 bg-gradient-to-r from-transparent to-gold-500/40" />
-          <svg width="12" height="12" viewBox="0 0 16 16" className="text-gold-500/60" fill="currentColor">
-            <path d="M8 0l2.5 5.5L16 8l-5.5 2.5L8 16l-2.5-5.5L0 8l5.5-2.5z" />
-          </svg>
-          <div className="h-px w-8 bg-gradient-to-l from-transparent to-gold-500/40" />
+          {managerPhone && (
+            <a
+              href={`tel:${managerPhone.replace(/\s/g, '')}`}
+              className="card-surface inline-flex flex-col items-center gap-3 px-10 py-6"
+            >
+              <div className="h-11 w-11 rounded-full bg-royal-50 flex items-center justify-center">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-royal-500"
+                >
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+              </div>
+              <span className="text-[15px] font-medium text-royal-500 tabular-nums">
+                {managerPhone}
+              </span>
+            </a>
+          )}
         </div>
+      </footer>
 
-        <h3 className="font-serif text-2xl sm:text-3xl font-bold text-gold-200 tracking-tight">
-          Любимый Кейтеринг
-        </h3>
-
-        <p className="mt-4 text-sm text-gold-300/50 max-w-md text-center leading-relaxed">
-          Создаём незабываемые гастрономические впечатления для ваших особенных событий
-        </p>
-
-        <div className="mt-8 h-px w-16 bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
-
-        <p className="mt-6 text-xs text-gold-300/30">
-          © {new Date().getFullYear()} Любимый Кейтеринг
-        </p>
-      </div>
-    </footer>
+      <div className="h-12" />
+    </>
   );
 }

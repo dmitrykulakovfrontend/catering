@@ -2,46 +2,46 @@ import { formatPrice } from '@/lib/calculations';
 import { MenuItem as MenuItemType } from '@/types';
 
 export default function MenuItem({ item }: { item: MenuItemType }) {
-  const lineTotal = item.pricePerUnit * item.quantity;
+  const total = item.pricePerUnit * item.quantity;
 
   return (
-    <div className="card-hover group flex gap-3 sm:gap-4 rounded-xl bg-white p-3 shadow-[0_1px_12px_-3px_rgba(0,0,0,0.06)]">
-      {/* Thumbnail — show full image, no cropping */}
-      <div className="relative h-20 w-24 sm:h-22 sm:w-28 flex-shrink-0 overflow-hidden rounded-lg bg-cream-dark">
+    <div className="card-surface flex gap-4 p-3.5 sm:p-4">
+      {/* Image with weight badge */}
+      <div className="relative flex-shrink-0">
         <img
           src={item.image}
           alt={item.name}
-          className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          className="h-[88px] w-[88px] sm:h-[100px] sm:w-[100px] rounded-lg object-cover bg-neutral-100"
         />
-        {/* Weight badge */}
-        <div className="absolute bottom-1.5 left-1.5 rounded-full bg-white/90 backdrop-blur-sm px-2 py-0.5 text-[10px] font-medium text-wine-600 shadow-sm">
-          {item.weight} {item.weightUnit}
-        </div>
+        <span className="absolute bottom-1.5 left-1.5 bg-royal-600/90 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-[3px] rounded-md leading-none">
+          {item.weight}&nbsp;{item.weightUnit}
+        </span>
       </div>
 
-      {/* Content — flows right */}
-      <div className="flex flex-1 flex-col min-w-0">
-        <h3 className="font-serif text-sm sm:text-base font-semibold text-wine-700 leading-snug">
+      {/* Content */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        <h3
+          className="font-bold text-neutral-900 text-sm sm:text-[15px] leading-snug"
+          title={item.name}
+        >
           {item.name}
         </h3>
-
         {item.description && (
-          <p className="mt-1 text-xs leading-relaxed text-neutral-400 line-clamp-2">
+          <p
+            className="text-xs sm:text-[13px] text-neutral-400 mt-0.5 leading-relaxed line-clamp-2"
+            title={item.description}
+          >
             {item.description}
           </p>
         )}
 
-        <div className="mt-auto" />
-
         {/* Price row */}
-        <div className="mt-2 flex items-end justify-between border-t border-cream-dark pt-2">
-          <span className="text-xs text-neutral-400">
-            {formatPrice(item.pricePerUnit)}
-            <span className="mx-0.5">×</span>
-            {item.quantity} шт
+        <div className="mt-auto pt-1.5 flex items-baseline justify-between gap-3">
+          <span className="text-xs text-neutral-400 tabular-nums">
+            {formatPrice(item.pricePerUnit)} &times; {item.quantity}&nbsp;шт
           </span>
-          <span className="text-sm sm:text-base font-semibold text-gold-700 tabular-nums">
-            {formatPrice(lineTotal)}
+          <span className="text-base sm:text-lg font-bold text-neutral-900 tabular-nums">
+            {formatPrice(total)}
           </span>
         </div>
       </div>

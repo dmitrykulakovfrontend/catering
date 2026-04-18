@@ -23,7 +23,7 @@ export interface ServiceItem {
   isPerPerson: boolean;
 }
 
-export interface ClientInfo {
+export interface ManagerInfo {
   name: string;
   phone: string;
   createdAt: string;
@@ -33,7 +33,8 @@ export interface MenuData {
   eventTitle: string;
   eventTime: string;
   persons: number;
-  client: ClientInfo;
+  manager: ManagerInfo;
+  validUntil: string | null;
   banquet: MenuCategory[];
   welcome: MenuItem[];
   services: ServiceItem[];

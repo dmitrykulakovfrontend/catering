@@ -8,29 +8,32 @@ export default function ServicesTable({
   services: ServiceItem[];
   persons: number;
 }) {
+  if (services.length === 0) return null;
+
   let subtotal = 0;
   for (const s of services) {
     subtotal += s.isPerPerson ? s.price * persons : s.price * s.quantity;
   }
 
   return (
-    <section className="py-8 sm:py-10">
-      {/* Section heading */}
-      <div className="mb-5 sm:mb-6 flex flex-col items-center text-center">
-        <div className="ornament-divider w-full max-w-sm mb-4">
-          <span className="ornament-diamond" />
-        </div>
-
-        <h2 className="font-serif text-xl sm:text-2xl font-bold text-wine-700 tracking-tight">
-          Услуги
-        </h2>
-
-        <div className="mt-2.5 h-0.5 w-10 rounded-full bg-gradient-to-r from-gold-400 to-gold-600" />
+    <section className="mb-16 sm:mb-20">
+      {/* Ornamental divider */}
+      <div className="ornament-divider mb-5">
+        <span className="ornament-diamond" />
       </div>
 
-      {/* Services list */}
-      <div className="mx-auto max-w-2xl rounded-2xl bg-white shadow-[0_2px_24px_-6px_rgba(0,0,0,0.06)] overflow-hidden">
-        <div className="divide-y divide-cream-dark">
+      {/* Title */}
+      <div className="text-center mb-8 sm:mb-10">
+        <h2 className="font-serif text-[28px] sm:text-4xl font-bold text-neutral-900 tracking-tight leading-none">
+          Услуги
+        </h2>
+        <div className="mx-auto mt-3 w-8 h-[2px] bg-royal-500 rounded-full" />
+      </div>
+
+      {/* Service card */}
+      <div className="mx-auto max-w-2xl card-surface overflow-hidden">
+        {/* Rows */}
+        <div className="divide-y divide-neutral-100">
           {services.map((service) => {
             const total = service.isPerPerson
               ? service.price * persons
@@ -39,20 +42,19 @@ export default function ServicesTable({
             return (
               <div
                 key={service.id}
-                className="flex items-center justify-between px-6 py-4 sm:px-8 sm:py-5 transition-colors hover:bg-gold-50/40"
+                className="flex items-center justify-between px-5 sm:px-7 py-4 sm:py-5"
               >
-                <div className="flex flex-col min-w-0 pr-4">
-                  <span className="text-sm font-medium text-neutral-700">
+                <div className="min-w-0 pr-4">
+                  <p className="font-medium text-neutral-900 text-sm sm:text-[15px]">
                     {service.name}
-                  </span>
+                  </p>
                   {service.isPerPerson && (
-                    <span className="mt-0.5 text-xs text-gold-600/70">
-                      {formatPrice(service.price)} × {persons} персон
-                    </span>
+                    <p className="text-xs text-neutral-400 mt-0.5 tabular-nums">
+                      {formatPrice(service.price)} &times; {persons}&nbsp;персон
+                    </p>
                   )}
                 </div>
-
-                <span className="flex-shrink-0 text-sm font-semibold text-gold-700 tabular-nums">
+                <span className="text-base sm:text-lg font-bold text-neutral-900 tabular-nums whitespace-nowrap">
                   {formatPrice(total)}
                 </span>
               </div>
@@ -60,12 +62,12 @@ export default function ServicesTable({
           })}
         </div>
 
-        {/* Subtotal */}
-        <div className="border-t-2 border-gold-200/60 bg-gold-50/50 px-6 py-5 sm:px-8 flex items-center justify-between">
-          <span className="font-serif text-base font-semibold text-wine-700">
+        {/* Total strip */}
+        <div className="bg-royal-50/60 border-t border-royal-100/50 flex items-center justify-between px-5 sm:px-7 py-4 sm:py-5">
+          <span className="font-semibold text-neutral-900 text-sm sm:text-[15px]">
             Итого за услуги
           </span>
-          <span className="font-serif text-lg font-bold text-gold-700 tabular-nums">
+          <span className="text-lg sm:text-xl font-bold text-neutral-900 tabular-nums tracking-tight">
             {formatPrice(subtotal)}
           </span>
         </div>

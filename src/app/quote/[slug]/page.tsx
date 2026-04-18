@@ -26,7 +26,7 @@ export async function generateMetadata({
   if (!quote) return { title: 'Не найдено' }
   return {
     title: `${quote.eventTitle} — Любимый Кейтеринг`,
-    description: `Банкетное меню для ${quote.clientName}`,
+    description: `Банкетное меню — ${quote.eventTitle}`,
   }
 }
 
@@ -46,32 +46,44 @@ export default async function QuotePage({
   const stats = calculateStats(menuData)
 
   return (
-    <main>
+    <div className="min-h-screen font-sans text-neutral-900">
       <Hero
         eventTitle={menuData.eventTitle}
-        eventTime={menuData.eventTime}
         persons={menuData.persons}
         grandTotal={stats.grandTotal}
-        client={menuData.client}
+        manager={menuData.manager}
+        validUntil={menuData.validUntil}
       />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {menuData.banquet.map((category) => (
-          <MenuSection key={category.id} title={category.title}>
-            {category.items.map((item) => (
-              <MenuItem key={item.id} item={item} />
-            ))}
-          </MenuSection>
-        ))}
+      {/* Menu sections */}
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-4">
+        {/* Banquet categories */}
+        {menuData.banquet.map((category) => {
+          const catTotal = category.items.reduce(
+            (sum, item) => sum + item.pricePerUnit * item.quantity,
+            0
+          )
+          return (
+            <MenuSection key={category.id} title={category.title} categoryTotal={catTotal}>
+              {category.items.map((item) => (
+                <MenuItem key={item.id} item={item} />
+              ))}
+            </MenuSection>
+          )
+        })}
 
+        {/* Welcome zone */}
         <WelcomeSection items={menuData.welcome} />
 
+        {/* Services */}
         <ServicesTable services={menuData.services} persons={menuData.persons} />
-
-        <StatsSummary stats={stats} />
       </div>
 
-      <Footer />
-    </main>
+      {/* Cost Breakdown */}
+      <StatsSummary stats={stats} managerPhone={menuData.manager.phone} />
+
+      {/* Footer */}
+      <Footer managerPhone={menuData.manager.phone} />
+    </div>
   )
 }

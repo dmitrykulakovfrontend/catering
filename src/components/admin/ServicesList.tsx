@@ -32,42 +32,42 @@ export default function ServicesList({ services }: { services: ServiceTemplate[]
 
   return (
     <>
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
         {services.length === 0 ? (
-          <div className="px-6 py-16 text-center text-sm text-gray-400">
+          <div className="px-6 py-16 text-center text-sm text-neutral-400">
             Нет шаблонов услуг
           </div>
         ) : (
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-gray-100 bg-gray-50/60">
+            <thead className="border-b border-neutral-100 bg-neutral-50">
               <tr>
-                <th className="px-6 py-3 font-medium text-gray-500">Название</th>
-                <th className="px-6 py-3 font-medium text-gray-500">Цена</th>
-                <th className="px-6 py-3 font-medium text-gray-500">Тип</th>
-                <th className="px-6 py-3 font-medium text-gray-500"></th>
+                <th className="px-6 py-3 font-medium text-neutral-500">Название</th>
+                <th className="px-6 py-3 font-medium text-neutral-500">Цена</th>
+                <th className="px-6 py-3 font-medium text-neutral-500">Тип</th>
+                <th className="px-6 py-3 font-medium text-neutral-500"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-neutral-100">
               {services.map((svc) => (
-                <tr key={svc.id} className="hover:bg-gold-50/40 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-900">{svc.name}</td>
-                  <td className="px-6 py-4 text-gray-600">
+                <tr key={svc.id} className="hover:bg-royal-50/40 transition-colors">
+                  <td className="px-6 py-4 font-medium text-neutral-900">{svc.name}</td>
+                  <td className="px-6 py-4 text-neutral-600">
                     {svc.defaultPrice.toLocaleString('ru-RU')} ₽
                   </td>
                   <td className="px-6 py-4">
                     {svc.isPerPerson ? (
-                      <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
+                      <span className="inline-flex items-center rounded-full bg-royal-50 px-2 py-0.5 text-xs font-medium text-royal-700">
                         за персону
                       </span>
                     ) : (
-                      <span className="text-xs text-gray-400">фикс.</span>
+                      <span className="text-xs text-neutral-400">фикс.</span>
                     )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-1 justify-end">
                       <button
                         onClick={() => setEditing(svc)}
-                        className="rounded-md px-2.5 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100"
+                        className="rounded-md px-2.5 py-1 text-xs font-medium text-neutral-600 hover:bg-neutral-100"
                       >
                         Изменить
                       </button>

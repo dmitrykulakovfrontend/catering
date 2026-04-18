@@ -25,8 +25,6 @@ export default function LoginForm() {
 
     setLoading(false);
 
-    console.log(result);
-
     if (result?.error) {
       setError("Неверный email или пароль");
     } else {
@@ -46,7 +44,7 @@ export default function LoginForm() {
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-neutral-700"
         >
           Email
         </label>
@@ -55,7 +53,7 @@ export default function LoginForm() {
           name="email"
           type="email"
           required
-          className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-sm focus:border-wine-500 focus:ring-2 focus:ring-wine-500/20 focus:outline-none"
+          className="mt-1 block w-full rounded-lg border border-neutral-200 px-4 py-2.5 text-sm shadow-sm focus:border-royal-500 focus:ring-2 focus:ring-royal-500/20 focus:outline-none"
           placeholder="admin@catering.com"
         />
       </div>
@@ -63,7 +61,7 @@ export default function LoginForm() {
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-neutral-700"
         >
           Пароль
         </label>
@@ -72,14 +70,14 @@ export default function LoginForm() {
           name="password"
           type="password"
           required
-          className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-sm focus:border-wine-500 focus:ring-2 focus:ring-wine-500/20 focus:outline-none"
+          className="mt-1 block w-full rounded-lg border border-neutral-200 px-4 py-2.5 text-sm shadow-sm focus:border-royal-500 focus:ring-2 focus:ring-royal-500/20 focus:outline-none"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-wine-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-wine-600 disabled:opacity-60"
+        className="w-full rounded-lg bg-royal-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-royal-600 disabled:opacity-60"
       >
         {loading ? "Вход..." : "Войти"}
       </button>

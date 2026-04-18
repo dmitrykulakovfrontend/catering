@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" className={`${playfair.variable} ${inter.variable} antialiased`}>
-      <body className="min-h-screen bg-[#FAF8F5] text-[#1A1A1A] font-sans">
+      <body className="min-h-screen bg-[#F7F8FB] text-[#1A1A1A] font-sans">
         {children}
         <Toaster position="top-right" richColors />
       </body>

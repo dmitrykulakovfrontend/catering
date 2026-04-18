@@ -60,14 +60,14 @@ export default function CatalogList({ categories }: { categories: Category[] }) 
     <>
       <div className="space-y-6">
         {categories.map((cat, catIdx) => (
-          <div key={cat.id} className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-            <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50/60 px-6 py-3">
-              <h3 className="font-semibold text-gray-900">{cat.name}</h3>
+          <div key={cat.id} className="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
+            <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50 px-6 py-3">
+              <h3 className="font-semibold text-neutral-900">{cat.name}</h3>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => moveCategory(catIdx, -1)}
                   disabled={catIdx === 0}
-                  className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-600 disabled:opacity-30"
+                  className="rounded p-1 text-neutral-400 hover:bg-neutral-200 hover:text-neutral-600 disabled:opacity-30"
                   title="Вверх"
                 >
                   ↑
@@ -75,14 +75,14 @@ export default function CatalogList({ categories }: { categories: Category[] }) 
                 <button
                   onClick={() => moveCategory(catIdx, 1)}
                   disabled={catIdx === categories.length - 1}
-                  className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-600 disabled:opacity-30"
+                  className="rounded p-1 text-neutral-400 hover:bg-neutral-200 hover:text-neutral-600 disabled:opacity-30"
                   title="Вниз"
                 >
                   ↓
                 </button>
                 <button
                   onClick={() => setAddingToCategoryId(cat.id)}
-                  className="rounded-md bg-wine-700 px-3 py-1 text-xs font-medium text-white hover:bg-wine-600"
+                  className="rounded-md bg-royal-500 px-3 py-1 text-xs font-medium text-white hover:bg-royal-600"
                 >
                   Добавить блюдо
                 </button>
@@ -96,15 +96,15 @@ export default function CatalogList({ categories }: { categories: Category[] }) 
             </div>
 
             {cat.dishes.length === 0 ? (
-              <div className="px-6 py-8 text-center text-sm text-gray-400">
+              <div className="px-6 py-8 text-center text-sm text-neutral-400">
                 Нет блюд в этой категории
               </div>
             ) : (
-              <div className="divide-y divide-gray-50">
+              <div className="divide-y divide-neutral-50">
                 {cat.dishes.map((dish) => (
                   <div
                     key={dish.id}
-                    className="flex items-center gap-4 px-6 py-3 hover:bg-gold-50/30 transition-colors"
+                    className="flex items-center gap-4 px-6 py-3 hover:bg-royal-50/30 transition-colors"
                   >
                     {dish.image ? (
                       <img
@@ -113,20 +113,20 @@ export default function CatalogList({ categories }: { categories: Category[] }) 
                         className="h-10 w-10 rounded-lg object-cover"
                       />
                     ) : (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-400 text-xs">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 text-neutral-400 text-xs">
                         ◇
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">{dish.name}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium text-neutral-900 truncate">{dish.name}</p>
+                      <p className="text-xs text-neutral-500">
                         {dish.weight} {dish.weightUnit} · {dish.defaultPrice} ₽
                       </p>
                     </div>
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => setEditingDish(dish)}
-                        className="rounded-md px-2.5 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100"
+                        className="rounded-md px-2.5 py-1 text-xs font-medium text-neutral-600 hover:bg-neutral-100"
                       >
                         Изменить
                       </button>

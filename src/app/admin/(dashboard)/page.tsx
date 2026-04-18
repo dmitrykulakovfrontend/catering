@@ -9,10 +9,10 @@ export default async function AdminDashboard() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-2xl font-bold text-gray-900">
+          <h1 className="font-sans text-2xl font-bold text-neutral-900">
             Панель управления
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-neutral-500">
             {quotes.length}{' '}
             {quotes.length === 1
               ? 'банкет'
@@ -23,7 +23,7 @@ export default async function AdminDashboard() {
         </div>
         <Link
           href="/admin/quotes/new"
-          className="rounded-lg bg-wine-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-wine-600"
+          className="rounded-lg bg-royal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-royal-600"
         >
           Новый банкет
         </Link>

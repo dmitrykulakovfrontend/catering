@@ -14,8 +14,8 @@ function transliterate(text: string): string {
     .join('')
 }
 
-export function generateSlug(title: string, clientName: string): string {
-  const raw = `${title} ${clientName}`
+export function generateSlug(title: string, managerName: string): string {
+  const raw = `${title} ${managerName}`
   const latin = transliterate(raw)
   return latin
     .replace(/[^a-z0-9]+/g, '-')

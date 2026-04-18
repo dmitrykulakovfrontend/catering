@@ -14,15 +14,14 @@ export default function AdminSidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-gold-200/60 bg-white">
-      <div className="border-b border-gold-200/60 px-6 py-5">
+    <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-neutral-200 bg-white">
+      <div className="border-b border-neutral-200 px-3 py-2 flex justify-center">
         <Link href="/admin" className="block">
-          <h1 className="font-serif text-xl font-bold text-wine-700">
-            Любимый
-          </h1>
-          <p className="text-xs tracking-widest text-gold-600 uppercase">
-            Кейтеринг
-          </p>
+          <img
+            src="/logo.png"
+            alt="Любимый Кейтеринг"
+            className="h-24 w-auto"
+          />
         </Link>
       </div>
 
@@ -44,11 +43,11 @@ export default function AdminSidebar() {
               href={item.href}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-wine-700 text-white shadow-sm'
-                  : 'text-gray-600 hover:bg-gold-50 hover:text-wine-700'
+                  ? 'bg-royal-500 text-white shadow-sm'
+                  : 'text-neutral-600 hover:bg-royal-50 hover:text-royal-700'
               }`}
             >
-              <span className={`text-xs ${isActive ? 'text-gold-300' : 'text-gold-500'}`}>
+              <span className={`text-xs ${isActive ? 'text-royal-200' : 'text-royal-500'}`}>
                 {item.icon}
               </span>
               {item.label}
@@ -57,10 +56,10 @@ export default function AdminSidebar() {
         })}
       </nav>
 
-      <div className="border-t border-gold-200/60 px-3 py-4">
+      <div className="border-t border-neutral-200 px-3 py-4">
         <button
           onClick={() => signOut({ callbackUrl: '/admin/login' })}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-500 transition-all hover:bg-red-50 hover:text-red-600"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-500 transition-all hover:bg-red-50 hover:text-red-600"
         >
           <span className="text-xs">✕</span>
           Выйти

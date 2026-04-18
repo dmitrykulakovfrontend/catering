@@ -10,7 +10,7 @@ export default function AddServiceButton() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="rounded-lg bg-wine-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-wine-600"
+        className="rounded-lg bg-royal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-royal-600"
       >
         Добавить услугу
       </button>

@@ -1,6 +1,6 @@
 import { prisma } from './prisma'
 import { formatDateRu } from './utils'
-import type { MenuData, MenuCategory, MenuItem, ServiceItem, ClientInfo } from '@/types'
+import type { MenuData, MenuCategory, MenuItem, ServiceItem, ManagerInfo } from '@/types'
 
 // ─── Catalog ────────────────────────────────────────────────
 
@@ -40,8 +40,8 @@ export async function getAllQuotes() {
       eventTitle: true,
       eventTime: true,
       persons: true,
-      clientName: true,
-      clientPhone: true,
+      managerName: true,
+      managerPhone: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -128,9 +128,9 @@ export function quoteToMenuData(quote: QuoteWithDetails): MenuData {
     isPerPerson: svc.isPerPerson,
   }))
 
-  const client: ClientInfo = {
-    name: quote.clientName,
-    phone: quote.clientPhone,
+  const manager: ManagerInfo = {
+    name: quote.managerName,
+    phone: quote.managerPhone ?? '',
     createdAt: formatDateRu(quote.createdAt),
   }
 
@@ -138,7 +138,8 @@ export function quoteToMenuData(quote: QuoteWithDetails): MenuData {
     eventTitle: quote.eventTitle,
     eventTime: quote.eventTime,
     persons: quote.persons,
-    client,
+    manager,
+    validUntil: quote.validUntil ? formatDateRu(quote.validUntil) : null,
     banquet: banquetSections,
     welcome: welcomeItems,
     services,

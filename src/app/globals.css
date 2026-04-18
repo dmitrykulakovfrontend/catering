@@ -3,30 +3,31 @@
 @theme inline {
   --font-sans: var(--font-inter);
   --font-serif: var(--font-playfair);
-  --color-gold-50: #FBF7EE;
-  --color-gold-100: #F5ECD5;
-  --color-gold-200: #EBDAAF;
-  --color-gold-300: #DFC27F;
-  --color-gold-400: #D4A84E;
-  --color-gold-500: #C9A84C;
-  --color-gold-600: #B8860B;
-  --color-gold-700: #8B6914;
-  --color-wine-500: #722F37;
-  --color-wine-600: #5A252C;
-  --color-wine-700: #3E1A1E;
-  --color-cream: #FAF8F5;
-  --color-cream-dark: #F0EBE3;
+  --color-royal-50: #EEF2FF;
+  --color-royal-100: #E0E7FF;
+  --color-royal-200: #C7D2FE;
+  --color-royal-300: #A5B4FC;
+  --color-royal-400: #818CF8;
+  --color-royal-500: #3361FF;
+  --color-royal-600: #2850E6;
+  --color-royal-700: #1E3FCC;
+  --color-royal-800: #162E99;
+  --color-royal-900: #0F1F66;
+  --color-cream: #F7F8FB;
+  --color-cream-dark: #ECEEF4;
 }
 
 body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* Ornamental gold divider */
+/* ── Ornamental divider ── */
 .ornament-divider {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
+  max-width: 280px;
+  margin-inline: auto;
 }
 
 .ornament-divider::before,
@@ -37,49 +38,53 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    var(--color-gold-300) 20%,
-    var(--color-gold-500) 50%,
-    var(--color-gold-300) 80%,
+    var(--color-royal-300) 30%,
+    var(--color-royal-500) 50%,
+    var(--color-royal-300) 70%,
     transparent
   );
+  opacity: 0.6;
 }
 
-/* Diamond ornament for section dividers */
 .ornament-diamond {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
 }
 
 .ornament-diamond::before {
   content: '';
   position: absolute;
-  width: 8px;
-  height: 8px;
-  background: var(--color-gold-500);
+  width: 7px;
+  height: 7px;
+  background: var(--color-royal-500);
   transform: rotate(45deg);
+  opacity: 0.7;
 }
 
-/* Subtle noise texture overlay */
-.texture-noise {
-  position: relative;
+/* ── Card surface ── */
+.card-surface {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-.texture-noise::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 256px 256px;
-  pointer-events: none;
-  z-index: 1;
+.card-surface:hover {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.07);
+  transform: translateY(-1px);
 }
 
-/* Fade-in animation for scroll reveal */
+/* ── Fade-in animation ── */
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -95,44 +100,8 @@ body {
   animation: fadeUp 0.7s ease-out both;
 }
 
-/* Staggered delays */
 .delay-1 { animation-delay: 0.1s; }
 .delay-2 { animation-delay: 0.2s; }
 .delay-3 { animation-delay: 0.3s; }
 .delay-4 { animation-delay: 0.4s; }
 .delay-5 { animation-delay: 0.5s; }
-
-/* Elegant hover lift for cards */
-.card-hover {
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 12px 40px -8px rgba(139, 105, 20, 0.1),
-    0 4px 12px -2px rgba(0, 0, 0, 0.05);
-}
-
-/* Gold shimmer on hero text */
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-.text-shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--color-gold-700) 0%,
-    var(--color-gold-400) 25%,
-    var(--color-gold-600) 50%,
-    var(--color-gold-400) 75%,
-    var(--color-gold-700) 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 6s linear infinite;
-}
