@@ -1,5 +1,5 @@
-import { MenuStats } from '@/types';
-import { formatPrice, formatWeight, formatVolume } from '@/lib/calculations';
+import { MenuStats } from "@/types";
+import { formatPrice, formatWeight, formatVolume } from "@/lib/calculations";
 
 export default function StatsSummary({
   stats,
@@ -9,12 +9,18 @@ export default function StatsSummary({
   managerPhone?: string;
 }) {
   const statCards = [
-    { label: 'Стоимость меню', value: formatPrice(stats.menuCost) },
-    { label: 'На человека', value: formatPrice(stats.costPerPerson) },
-    { label: 'Еды на человека', value: formatWeight(stats.foodPerPerson) },
-    { label: 'Напитков на человека', value: formatVolume(stats.drinksPerPerson) },
-    { label: 'Общий вес еды', value: formatWeight(stats.totalFoodWeight) },
-    { label: 'Общий объем напитков', value: formatVolume(stats.totalDrinkVolume) },
+    { label: "Стоимость меню", value: formatPrice(stats.menuCost) },
+    { label: "На человека", value: formatPrice(stats.costPerPerson) },
+    { label: "Еды на человека", value: formatWeight(stats.foodPerPerson) },
+    {
+      label: "Напитков на человека",
+      value: formatVolume(stats.drinksPerPerson),
+    },
+    { label: "Общий вес еды", value: formatWeight(stats.totalFoodWeight) },
+    {
+      label: "Общий объем напитков",
+      value: formatVolume(stats.totalDrinkVolume),
+    },
   ];
 
   return (
@@ -65,48 +71,65 @@ export default function StatsSummary({
           </div>
         </div>
 
-        {/* Grand total banner */}
-        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-royal-800 via-royal-700 to-royal-600 px-6 py-10 sm:py-12 text-center">
-          {/* Subtle pattern overlay */}
+        {/* Grand total banner — warm espresso with champagne accents */}
+        <div
+          className="relative rounded-2xl overflow-hidden px-6 py-10 sm:py-12 text-center bg-[#25201c] shadow-[0_24px_60px_-24px_rgba(37,32,28,0.45)]"
+        >
+          {/* Radial warm highlight — light catching on polished surface */}
           <div
-            className="absolute inset-0 opacity-[0.04]"
+            className="absolute inset-0"
             style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-              backgroundSize: '24px 24px',
+              background:
+                "radial-gradient(130% 95% at 18% 8%, #7a6253 0%, #463830 42%, #25201c 100%)",
             }}
           />
+          {/* Soft champagne dot texture */}
+          <div
+            className="absolute inset-0 opacity-[0.06] mix-blend-overlay"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, #f4e9d6 1px, transparent 0)`,
+              backgroundSize: "22px 22px",
+            }}
+          />
+          {/* Hairline top highlight + inset ring */}
+          <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#d4b896]/50 to-transparent" />
+          <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-[#d4b896]/10 pointer-events-none" />
 
           <div className="relative">
             {/* Top ornament */}
             <div className="flex items-center justify-center gap-3 mb-5">
-              <div className="w-12 sm:w-16 h-px bg-white/25" />
-              <span className="inline-block w-2 h-2 bg-white/60 rotate-45" />
-              <div className="w-12 sm:w-16 h-px bg-white/25" />
+              <div className="w-12 sm:w-16 h-px bg-[#d4b896]/35" />
+              <span className="inline-block w-2 h-2 bg-[#d4b896]/75 rotate-45" />
+              <div className="w-12 sm:w-16 h-px bg-[#d4b896]/35" />
             </div>
 
-            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.25em] text-royal-200/70 mb-3">
+            <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.3em] text-[#d4b896] mb-3">
               Общая сумма
             </p>
-            <p className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tabular-nums tracking-tight font-serif leading-none">
+            <p className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#faf4e8] tabular-nums tracking-tight font-serif leading-none">
               {formatPrice(stats.grandTotal)}
             </p>
 
             {/* Bottom ornament */}
             <div className="flex items-center justify-center gap-3 mt-6">
-              <div className="w-12 sm:w-16 h-px bg-white/25" />
-              <span className="inline-block w-2 h-2 bg-white/60 rotate-45" />
-              <div className="w-12 sm:w-16 h-px bg-white/25" />
+              <div className="w-12 sm:w-16 h-px bg-[#d4b896]/35" />
+              <span className="inline-block w-2 h-2 bg-[#d4b896]/75 rotate-45" />
+              <div className="w-12 sm:w-16 h-px bg-[#d4b896]/35" />
             </div>
           </div>
         </div>
 
-        {/* CTA */}
+        {/* CTA — espresso button, champagne hairlines, restaurant-grade weight */}
         {managerPhone && (
           <a
-            href={`tel:${managerPhone.replace(/\s/g, '')}`}
-            className="mt-6 block w-full max-w-sm mx-auto rounded-xl bg-royal-500 py-3.5 text-center text-[15px] font-semibold text-white hover:bg-royal-600 active:bg-royal-700 transition-colors"
+            href={`tel:${managerPhone.replace(/\s/g, "")}`}
+            className="mt-6 group relative flex w-full max-w-sm mx-auto items-center justify-center rounded-xl bg-[#25201c] py-3.5 text-[13px] font-semibold tracking-[0.2em] uppercase text-[#faf4e8] shadow-[0_12px_30px_-12px_rgba(37,32,28,0.5)] ring-1 ring-[#d4b896]/15 hover:bg-[#362d26] active:bg-[#1b1714] transition-colors"
           >
-            Заказать
+            <span className="inline-flex items-center gap-3">
+              <span className="w-5 h-px bg-[#d4b896]/60 transition-all group-hover:w-8" />
+              Заказать
+              <span className="w-5 h-px bg-[#d4b896]/60 transition-all group-hover:w-8" />
+            </span>
           </a>
         )}
       </div>
