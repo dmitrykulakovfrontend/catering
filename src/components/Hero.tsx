@@ -19,7 +19,7 @@ export default function Hero({
     <header className="relative">
       <div className="relative h-screen flex">
         <Image
-          src="/background.webp"
+          src="/background-old.webp"
           alt=""
           fill
           priority

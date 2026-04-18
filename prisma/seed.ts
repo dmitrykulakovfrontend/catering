@@ -19,6 +19,14 @@ async function main() {
   await prisma.dish.deleteMany()
   await prisma.dishCategory.deleteMany()
   await prisma.serviceTemplate.deleteMany()
+  await prisma.siteSetting.deleteMany()
+
+  // ─── Phase 0: Site Settings ────────────────────────────────
+
+  await prisma.siteSetting.create({
+    data: { key: 'phone', value: '7(964)7611900' },
+  })
+  console.log('Site settings seeded.')
 
   // ─── Phase 1: Seed Catalog ─────────────────────────────────
 

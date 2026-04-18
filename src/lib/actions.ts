@@ -20,6 +20,21 @@ async function requireSession() {
   return session
 }
 
+// ─── Site Settings ──────────────────────────────────────────
+
+export async function updateSiteSettings(settings: { key: string; value: string }[]) {
+  await requireSession()
+  for (const { key, value } of settings) {
+    await prisma.siteSetting.upsert({
+      where: { key },
+      update: { value },
+      create: { key, value },
+    })
+  }
+  revalidatePath('/')
+  revalidatePath('/admin/settings')
+}
+
 // ─── Categories ─────────────────────────────────────────────
 
 export async function createCategory(data: CategoryFormData) {

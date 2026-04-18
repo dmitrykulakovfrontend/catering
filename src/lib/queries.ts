@@ -2,6 +2,22 @@ import { prisma } from './prisma'
 import { formatDateRu } from './utils'
 import type { MenuData, MenuCategory, MenuItem, ServiceItem, ManagerInfo } from '@/types'
 
+// ─── Site Settings ──────────────────────────────────────────
+
+export async function getSiteSetting(key: string): Promise<string | null> {
+  try {
+    const setting = await prisma.siteSetting.findUnique({ where: { key } })
+    return setting?.value ?? null
+  } catch {
+    // Table may not exist yet in production — fall back gracefully
+    return null
+  }
+}
+
+export async function getAllSiteSettings(): Promise<{ key: string; value: string }[]> {
+  return prisma.siteSetting.findMany({ orderBy: { key: 'asc' } })
+}
+
 // ─── Catalog ────────────────────────────────────────────────
 
 export async function getAllCategories() {

@@ -6,6 +6,14 @@ datasource db {
   provider = "sqlite"
 }
 
+// ─── SITE SETTINGS ─────────────────────────────────────────
+
+model SiteSetting {
+  key   String @id
+  value String
+  updatedAt DateTime @updatedAt
+}
+
 // ─── CATALOG ────────────────────────────────────────────────
 
 model DishCategory {

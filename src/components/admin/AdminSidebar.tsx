@@ -8,6 +8,7 @@ const navItems = [
   { href: '/admin', label: 'Панель управления', icon: '◆' },
   { href: '/admin/catalog', label: 'Каталог блюд', icon: '◈' },
   { href: '/admin/catalog/services', label: 'Услуги', icon: '◇' },
+  { href: '/admin/settings', label: 'Настройки', icon: '⚙' },
 ]
 
 export default function AdminSidebar() {

@@ -1,28 +1,20 @@
 import Image from "next/image";
+import { getSiteSetting } from "@/lib/queries";
 
-const PHONE = "+7 (916) 123-45-67";
-const PHONE_HREF = `tel:${PHONE.replace(/[^\d+]/g, "")}`;
+const DEFAULT_PHONE = "7(964)7611900";
 
 const stats = [
-  { value: "2000+", label: "мероприятий" },
-  { value: "12 лет", label: "на рынке" },
-  { value: "150+", label: "блюд в меню" },
-  { value: "98%", label: "возвращаются" },
+  { value: "500+", label: "мероприятий" },
+  { value: "10 лет", label: "на рынке" },
+  { value: "600+", label: "блюд в каталоге" },
+  { value: "50 000+", label: "довольных гостей" },
 ];
 
 const features = [
   {
-    title: "Свежие продукты",
+    title: "Авторское меню",
     description:
-      "Закупаем у проверенных поставщиков утром в день мероприятия — никаких заготовок «на завтра».",
-    icon: (
-      <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" />
-    ),
-  },
-  {
-    title: "Шеф-повар",
-    description:
-      "Авторская кухня, разработанная под формат события — от лёгкого фуршета до банкета на 500 гостей.",
+      "Сезонные продукты, современные тренды и классика — создаём гастрономические эмоции под формат вашего события.",
     icon: (
       <>
         <path d="M6 13.5V21h12v-7.5" />
@@ -31,9 +23,9 @@ const features = [
     ),
   },
   {
-    title: "Сервис под ключ",
+    title: "Полный цикл",
     description:
-      "Посуда, мебель, флористика, официанты, бармены — берём на себя все организационные хлопоты.",
+      "Разработка концепции, логистика, декор, музыкальное сопровождение — берём на себя всё от идеи до реализации.",
     icon: (
       <>
         <path d="M3 9.5 12 4l9 5.5" />
@@ -42,9 +34,17 @@ const features = [
     ),
   },
   {
-    title: "Прозрачная смета",
+    title: "Шоу-станции",
     description:
-      "Фиксируем цену в индивидуальной онлайн-смете — без скрытых платежей и доплат на месте.",
+      "Шоколадные фонтаны, сырные борды, живой гриль — интерактивные станции, которые делают событие незабываемым.",
+    icon: (
+      <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" />
+    ),
+  },
+  {
+    title: "Эко-подход",
+    description:
+      "Авторские коктейли под ваше событие, экологичные материалы и осознанный подход к каждой детали.",
     icon: (
       <>
         <rect x="4" y="3" width="16" height="18" rx="2" />
@@ -56,46 +56,53 @@ const features = [
 
 const services = [
   {
+    title: "Банкет",
+    description: "Классический формат с рассадкой гостей и подачей блюд по меню. От 4 000 ₽/чел., от 20 персон.",
+    image: "/images/service-banquet.jpg",
+  },
+  {
+    title: "Фуршет",
+    description: "Свободная рассадка — гости выбирают блюда с общих столов. От 2 000 ₽/чел., от 20 персон.",
+    image: "/images/service-buffet.jpeg",
+  },
+  {
+    title: "Кофе-брейк",
+    description: "Горячие напитки, свежая выпечка и лёгкие закуски для конференций и деловых встреч. От 2 300 ₽/чел.",
+    image: "/images/service-coffeebreak.webp",
+  },
+  {
     title: "Свадьбы",
-    description: "Изысканное меню и элегантная подача для главного дня.",
-    image: "/images/svinaya-korejka.png",
+    description: "Изысканное авторское меню и элегантная сервировка для самого важного дня. Полный цикл организации.",
+    image: "/images/hero-carousel-1.webp",
   },
   {
-    title: "Корпоративы",
-    description: "Банкеты, фуршеты и тимбилдинги для команд от 20 до 500 человек.",
-    image: "/images/teplyj-salat-s-rostbifom.png",
+    title: "Кенди-бар и шоу-станции",
+    description: "Шоколадные фонтаны, сырные борды, живой гриль — интерактивные станции для особого впечатления.",
+    image: "/images/hero-carousel-2.webp",
   },
   {
-    title: "Фуршеты",
-    description: "Канапе, тарталетки и закуски для презентаций и деловых приёмов.",
-    image: "/images/kanape-grecheskoe.png",
+    title: "BBQ и выездной гриль",
+    description: "Блюда на гриле прямо на вашей площадке — идеально для тимбилдингов и загородных мероприятий.",
+    image: "/images/hero-carousel-3.webp",
   },
-  {
-    title: "Кофе-брейки",
-    description: "Свежая выпечка, фрукты и напитки для конференций и встреч.",
-    image: "/images/fruktovoe-assorti.png",
-  },
-  {
-    title: "Частные приёмы",
-    description: "Камерные ужины и юбилеи с персональным меню и обслуживанием.",
-    image: "/images/tartaletka-s-utkoj.png",
-  },
-  {
-    title: "Выездные мангалы",
-    description: "Шашлыки и блюда на гриле прямо на вашей площадке.",
-    image: "/images/ovoshchi-na-grile.png",
-  },
+];
+
+const team = [
+  { name: "Людмила", role: "Директор по развитию", image: "/images/team-ludmila.webp" },
+  { name: "Валерия", role: "Менеджер", image: "/images/team-valeria.webp" },
+  { name: "Ольга", role: "Старший менеджер по продажам", image: "/images/team-olga.webp" },
+  { name: "Дарья", role: "Менеджер по рекламе", image: "/images/team-daria.webp" },
 ];
 
 const dishes = [
   { src: "/images/salat-cezar.png", name: "Салат Цезарь", tag: "Салаты" },
   { src: "/images/befstroganov.png", name: "Бефстроганов", tag: "Горячее" },
-  { src: "/images/brusketa-kapreze.png", name: "Брускетта Капрезе", tag: "Закуски" },
+  { src: "/images/kanape-grecheskoe.png", name: "Канапе Греческое", tag: "Канапе" },
   { src: "/images/myasnoe-assorti.png", name: "Мясное ассорти", tag: "Холодные" },
-  { src: "/images/limonad-mohito.png", name: "Лимонад Мохито", tag: "Напитки" },
-  { src: "/images/plato-italyanskih-kolbas.png", name: "Плато итальянских колбас", tag: "Холодные" },
-  { src: "/images/zhulyen.png", name: "Жульен", tag: "Горячее" },
-  { src: "/images/ruletiki-iz-baklazhan.png", name: "Рулетики из баклажан", tag: "Закуски" },
+  { src: "/images/svinaya-korejka.png", name: "Свиная корейка", tag: "Мясное" },
+  { src: "/images/fruktovoe-assorti.png", name: "Фруктовое ассорти", tag: "Десерты" },
+  { src: "/images/ovoshchi-na-grile.png", name: "Овощи на гриле", tag: "Гриль" },
+  { src: "/images/tartaletka-s-utkoj.png", name: "Тарталетка с уткой", tag: "Закуски" },
 ];
 
 const steps = [
@@ -121,13 +128,16 @@ const steps = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const PHONE = (await getSiteSetting("phone")) || DEFAULT_PHONE;
+  const PHONE_HREF = `tel:${PHONE.replace(/[^\d+]/g, "")}`;
+
   return (
     <main>
       {/* ─── HERO ─── */}
       <section className="relative min-h-screen flex flex-col">
         <Image
-          src="/background.webp"
+          src="/background.jpeg"
           alt=""
           fill
           priority
@@ -170,14 +180,15 @@ export default function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full py-16 sm:py-20">
             <div className="max-w-2xl">
               <p className="animate-fade-up text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-royal-200 mb-5">
-                Кейтеринг в Москве · с 2012 года
+                Кейтеринг в Москве · 10 лет опыта
               </p>
               <h1 className="animate-fade-up delay-1 font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.05] tracking-tight mb-6">
-                Кухня, которую <br className="hidden sm:block" /> запомнят гости
+                Любимый кейтеринг <br className="hidden sm:block" /> для вас и вашей компании
               </h1>
               <p className="animate-fade-up delay-2 text-base sm:text-lg text-white/75 leading-relaxed mb-9 max-w-xl">
-                Авторское меню, безупречная подача и сервис под ключ для свадеб,
-                корпоративов и частных приёмов от 10 до 1000 персон.
+                Европейское качество, авторское меню и сервис под ключ — превращаем
+                мероприятия в незабываемые гастрономические впечатления. Свадьбы,
+                банкеты, фуршеты и корпоративы от 20 персон.
               </p>
               <div className="animate-fade-up delay-3 flex flex-wrap gap-3">
                 <a
@@ -322,7 +333,7 @@ export default function Home() {
               Наша кухня
             </p>
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-neutral-900 leading-tight tracking-tight">
-              Более 150 блюд в актуальном меню
+              Более 600 блюд в каталоге
             </h2>
             <p className="text-base text-neutral-500 leading-relaxed mt-5">
               Классика и авторские позиции, сезонные специалитеты и постные опции —
@@ -334,19 +345,20 @@ export default function Home() {
             {dishes.map((d) => (
               <figure
                 key={d.src}
-                className="group relative overflow-hidden rounded-2xl bg-neutral-100 aspect-square"
+                className="group overflow-hidden rounded-2xl bg-neutral-100"
               >
-                <img
-                  src={d.src}
-                  alt={d.name}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-neutral-900/85 via-neutral-900/20 to-transparent" />
-                <figcaption className="absolute inset-x-0 bottom-0 p-4">
-                  <p className="text-[10px] font-semibold tracking-widest uppercase text-royal-200 mb-1">
+                <div className="relative aspect-[206/80] overflow-hidden">
+                  <img
+                    src={d.src}
+                    alt={d.name}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <figcaption className="px-4 py-3">
+                  <p className="text-[10px] font-semibold tracking-widest uppercase text-royal-500 mb-0.5">
                     {d.tag}
                   </p>
-                  <p className="text-sm sm:text-base font-semibold text-white leading-tight">
+                  <p className="text-sm font-semibold text-neutral-900 leading-tight">
                     {d.name}
                   </p>
                 </figcaption>
@@ -392,6 +404,38 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─── TEAM ─── */}
+      <section className="py-20 sm:py-28 bg-cream-dark/50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mb-14">
+            <p className="text-xs font-semibold tracking-[0.25em] uppercase text-royal-500 mb-3">
+              Наша команда
+            </p>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-neutral-900 leading-tight tracking-tight">
+              Люди, которые создают ваш праздник
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
+            {team.map((t) => (
+              <div key={t.name} className="text-center">
+                <div className="relative overflow-hidden rounded-2xl bg-neutral-100 aspect-[3/4] mb-4">
+                  <img
+                    src={t.image}
+                    alt={t.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <h3 className="font-serif text-lg font-bold text-neutral-900">
+                  {t.name}
+                </h3>
+                <p className="text-sm text-neutral-500 mt-1">{t.role}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ─── CTA / CONTACT ─── */}
       <section
         id="contact"
@@ -409,48 +453,118 @@ export default function Home() {
             индивидуальное предложение под ваш бюджет.
           </p>
 
-          <a
-            href={PHONE_HREF}
-            className="card-surface inline-flex flex-col items-center gap-3 px-12 py-7 mx-auto"
-          >
-            <div className="h-12 w-12 rounded-full bg-royal-50 flex items-center justify-center">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-royal-500"
-              >
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-            </div>
-            <span className="text-lg font-semibold text-royal-500 tabular-nums">
-              {PHONE}
-            </span>
-            <span className="text-xs text-neutral-400 uppercase tracking-wider">
-              Ежедневно с 9:00 до 22:00
-            </span>
-          </a>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+            {/* Phone */}
+            <a
+              href={PHONE_HREF}
+              className="card-surface inline-flex flex-col items-center gap-3 px-6 py-7"
+            >
+              <div className="h-12 w-12 rounded-full bg-royal-50 flex items-center justify-center">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-royal-500"
+                >
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+              </div>
+              <span className="text-base font-semibold text-royal-500 tabular-nums">
+                {PHONE}
+              </span>
+              <span className="text-[11px] text-neutral-400 uppercase tracking-wider">
+                Звоните
+              </span>
+            </a>
+
+            {/* Telegram */}
+            <a
+              href="https://t.me/lovely_catering"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card-surface inline-flex flex-col items-center gap-3 px-6 py-7"
+            >
+              <div className="h-12 w-12 rounded-full bg-royal-50 flex items-center justify-center">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="text-royal-500"
+                >
+                  <path d="M11.944 0A12 12 0 1 0 24 12.056A12.01 12.01 0 0 0 11.944 0Zm5.573 7.26l-1.97 9.269c-.145.658-.537.818-1.084.508l-3-2.211-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.334-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.538-.196 1.006.128.832.954Z" />
+                </svg>
+              </div>
+              <span className="text-base font-semibold text-royal-500">
+                Telegram
+              </span>
+              <span className="text-[11px] text-neutral-400 uppercase tracking-wider">
+                @lovely_catering
+              </span>
+            </a>
+
+            {/* Email */}
+            <a
+              href="mailto:lovely-catering@bk.ru"
+              className="card-surface inline-flex flex-col items-center gap-3 px-6 py-7"
+            >
+              <div className="h-12 w-12 rounded-full bg-royal-50 flex items-center justify-center">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-royal-500"
+                >
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+              </div>
+              <span className="text-base font-semibold text-royal-500">
+                E-mail
+              </span>
+              <span className="text-[11px] text-neutral-400 uppercase tracking-wider">
+                lovely-catering@bk.ru
+              </span>
+            </a>
+          </div>
+
+          <p className="text-sm text-neutral-400 mt-8">
+            г. Москва, пр-д Донелайтиса, 26 · Ежедневно с 9:00 до 22:00
+          </p>
         </div>
       </section>
 
       {/* ─── FOOTER ─── */}
       <footer className="bg-neutral-900 text-white/55 py-10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <img
-              src="/logo-light.png"
-              alt="Любимый Кейтеринг"
-              className="h-8 w-auto"
-            />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <img
+                src="/logo-light.png"
+                alt="Любимый Кейтеринг"
+                className="h-8 w-auto"
+              />
+            </div>
+            <div className="flex items-center gap-5 text-xs">
+              <a href="https://t.me/lovely_catering" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Telegram</a>
+              <a href="https://vk.com/lovelycatering" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">VK</a>
+              <a href="mailto:lovely-catering@bk.ru" className="hover:text-white transition-colors">lovely-catering@bk.ru</a>
+            </div>
           </div>
-          <p className="text-xs">
-            © {new Date().getFullYear()} Любимый Кейтеринг. Все права защищены.
-          </p>
+          <div className="mt-6 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <p>г. Москва, пр-д Донелайтиса, 26</p>
+            <p>© {new Date().getFullYear()} LoVely Catering. Все права защищены.</p>
+          </div>
         </div>
       </footer>
     </main>
