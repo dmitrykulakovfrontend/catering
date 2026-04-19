@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { saveQuote } from '@/lib/actions'
@@ -89,23 +89,24 @@ export default function QuoteEditor({
 }: QuoteEditorProps) {
   const router = useRouter()
 
-  const [form, setForm] = useState({
-    eventTitle: initial?.eventTitle || '',
-    eventTime: initial?.eventTime || '',
-    persons: initial?.persons || 30,
-    managerName: initial?.managerName || '',
-    managerPhone: initial?.managerPhone || '',
-    notes: initial?.notes || '',
-    validUntil: initial?.validUntil || null,
-    slug: initial?.slug || '',
+  const initialSnapshot = useRef({
+    form: {
+      eventTitle: initial?.eventTitle || '',
+      eventTime: initial?.eventTime || '',
+      persons: initial?.persons || 30,
+      managerName: initial?.managerName || '',
+      managerPhone: initial?.managerPhone || '',
+      notes: initial?.notes || '',
+      validUntil: initial?.validUntil || null,
+      slug: initial?.slug || '',
+    },
+    sections: initial?.sections || [],
+    services: initial?.services || [],
   })
 
-  const [sections, setSections] = useState<QuoteSection[]>(
-    initial?.sections || []
-  )
-  const [services, setServices] = useState<QuoteService[]>(
-    initial?.services || []
-  )
+  const [form, setForm] = useState(initialSnapshot.current.form)
+  const [sections, setSections] = useState<QuoteSection[]>(initialSnapshot.current.sections)
+  const [services, setServices] = useState<QuoteService[]>(initialSnapshot.current.services)
 
   const [dishPickerSection, setDishPickerSection] = useState<number | null>(null)
   const [showServicePicker, setShowServicePicker] = useState(false)
@@ -134,11 +135,37 @@ export default function QuoteEditor({
     () => sections.map((s) => s.items.reduce((sum, it) => sum + it.pricePerUnit * it.quantity, 0)),
     [sections],
   )
+  const sectionWeights = useMemo(
+    () => sections.map((s) => aggregateWeights(s.items)),
+    [sections],
+  )
+  const totalWeight = useMemo(() => {
+    const acc: Record<string, number> = {}
+    for (const w of sectionWeights) {
+      for (const [k, v] of Object.entries(w)) acc[k] = (acc[k] || 0) + v
+    }
+    return acc
+  }, [sectionWeights])
   const servicesSubtotal = services.reduce(
     (sum, svc) => sum + (svc.isPerPerson ? svc.price * form.persons : svc.price * svc.quantity),
     0,
   )
   const allSectionsCollapsed = sections.length > 0 && collapsedSections.length === sections.length
+
+  const isDirty = useMemo(() => {
+    const cur = JSON.stringify({ form, sections, services })
+    const snap = JSON.stringify(initialSnapshot.current)
+    return cur !== snap
+  }, [form, sections, services])
+
+  function handleReset() {
+    if (!isDirty) return
+    if (!confirm('Отменить несохранённые изменения?')) return
+    setForm(initialSnapshot.current.form)
+    setSections(JSON.parse(JSON.stringify(initialSnapshot.current.sections)))
+    setServices(JSON.parse(JSON.stringify(initialSnapshot.current.services)))
+    toast.success('Изменения отменены')
+  }
 
   // Auto-generate slug when title/name changes (only for new quotes)
   function updateSlug() {
@@ -300,6 +327,11 @@ export default function QuoteEditor({
       }
 
       const quote = await saveQuote(data, quoteId)
+      initialSnapshot.current = {
+        form: { ...form },
+        sections: JSON.parse(JSON.stringify(sections)),
+        services: JSON.parse(JSON.stringify(services)),
+      }
       toast.success('Банкет сохранён')
 
       if (!quoteId) {
@@ -315,7 +347,7 @@ export default function QuoteEditor({
 
   const inputClass = "mt-1 block w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
   const inlineInputClass = "flex-1 min-w-0 rounded border border-transparent px-2 py-1 text-sm hover:border-neutral-200 focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
-  const smallInputClass = "rounded border border-neutral-200 px-2 py-1 text-center text-xs focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+  const smallInputClass = "rounded-md border border-neutral-200 bg-white px-2 py-1 text-center text-xs tabular-nums transition hover:border-neutral-300 focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 
   return (
     <div className="space-y-8">
@@ -495,6 +527,16 @@ export default function QuoteEditor({
               <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-neutral-600 ring-1 ring-neutral-200">
                 {section.items.length} {pluralItems(section.items.length)}
               </span>
+              {Object.keys(sectionWeights[sIdx]).length > 0 && (
+                <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-medium text-neutral-500 ring-1 ring-neutral-200">
+                  {formatWeightMap(sectionWeights[sIdx])}
+                  {form.persons > 0 && (
+                    <span className="text-neutral-400">
+                      {' '}· {formatWeightMap(perPerson(sectionWeights[sIdx], form.persons))}/чел
+                    </span>
+                  )}
+                </span>
+              )}
               <span className="text-xs font-semibold text-neutral-700">
                 {sub.toLocaleString('ru-RU')} ₽
               </span>
@@ -538,6 +580,29 @@ export default function QuoteEditor({
                       className={inlineInputClass}
                     />
                     <div className="flex items-center gap-1">
+                      <div
+                        className="flex items-center overflow-hidden rounded-md border border-neutral-200 bg-white transition focus-within:border-royal-500 focus-within:ring-1 focus-within:ring-royal-500/20 hover:border-neutral-300"
+                        title="Вес за порцию"
+                      >
+                        <input
+                          type="number"
+                          min={0}
+                          step="any"
+                          value={item.weight}
+                          onChange={(e) => updateItem(sIdx, iIdx, 'weight', parseFloat(e.target.value) || 0)}
+                          className="w-12 bg-transparent px-1.5 py-1 text-right text-xs tabular-nums focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                        <select
+                          value={item.weightUnit || 'г'}
+                          onChange={(e) => updateItem(sIdx, iIdx, 'weightUnit', e.target.value)}
+                          className="cursor-pointer appearance-none border-l border-neutral-200 bg-neutral-50 py-1 pr-1 pl-1.5 text-[11px] font-medium text-neutral-500 focus:bg-white focus:outline-none"
+                        >
+                          <option value="г">г</option>
+                          <option value="мл">мл</option>
+                          <option value="шт">шт</option>
+                          <option value="кг">кг</option>
+                        </select>
+                      </div>
                       <input
                         type="number"
                         min={1}
@@ -681,8 +746,55 @@ export default function QuoteEditor({
               </>
             )}
           </div>
+          {Object.keys(totalWeight).length > 0 && (
+            <div className="text-xs text-neutral-500">
+              Выход: <span className="font-semibold text-neutral-700">{formatWeightMap(totalWeight)}</span>
+              {form.persons > 0 && (
+                <>
+                  {' · ≈ '}
+                  <span className="font-semibold text-neutral-700">{formatWeightMap(perPerson(totalWeight, form.persons))}</span> / чел.
+                </>
+              )}
+            </div>
+          )}
         </div>
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
+          {isDirty && (
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-200"
+              title="Есть несохранённые изменения"
+            >
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500" />
+              Не сохранено
+            </span>
+          )}
+          {isDirty && (
+            <button
+              type="button"
+              onClick={handleReset}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-3.5 py-2 text-sm font-medium text-neutral-600 shadow-sm transition hover:border-red-300 hover:text-red-600"
+              title="Отменить несохранённые изменения"
+            >
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
+                <path d="M2 6.5a4.5 4.5 0 1 0 1.3-3.2M2 2v3h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Отменить
+            </button>
+          )}
+          {quoteId && initial?.slug && (
+            <a
+              href={`/quote/${initial.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-700 shadow-sm transition hover:border-royal-300 hover:text-royal-700"
+              title="Открыть предпросмотр в новой вкладке"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                <path d="M8 2h4v4M11.5 2.5L6 8M6 3H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Предпросмотр
+            </a>
+          )}
           <button
             onClick={handleSave}
             disabled={saving}
@@ -719,4 +831,48 @@ function pluralItems(n: number) {
   if (mod10 === 1 && mod100 !== 11) return 'блюдо'
   if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'блюда'
   return 'блюд'
+}
+
+function aggregateWeights(items: { weight: number; weightUnit: string; quantity: number }[]) {
+  const sums: Record<string, number> = {}
+  for (const it of items) {
+    if (!it.weight || it.weight <= 0) continue
+    const total = it.weight * it.quantity
+    let unit = it.weightUnit || 'г'
+    let val = total
+    if (unit === 'кг') { unit = 'г'; val = total * 1000 }
+    if (unit === 'л') { unit = 'мл'; val = total * 1000 }
+    sums[unit] = (sums[unit] || 0) + val
+  }
+  return sums
+}
+
+function perPerson(sums: Record<string, number>, persons: number) {
+  if (persons <= 0) return sums
+  const out: Record<string, number> = {}
+  for (const [k, v] of Object.entries(sums)) out[k] = v / persons
+  return out
+}
+
+function formatWeightMap(sums: Record<string, number>): string {
+  const order = ['г', 'мл', 'шт']
+  const parts: string[] = []
+  for (const unit of order) {
+    const v = sums[unit]
+    if (!v) continue
+    if (unit === 'г' && v >= 1000) {
+      parts.push(`${(v / 1000).toLocaleString('ru-RU', { maximumFractionDigits: 2 })} кг`)
+    } else if (unit === 'мл' && v >= 1000) {
+      parts.push(`${(v / 1000).toLocaleString('ru-RU', { maximumFractionDigits: 2 })} л`)
+    } else if (unit === 'шт') {
+      parts.push(`${Math.round(v).toLocaleString('ru-RU')} шт`)
+    } else {
+      parts.push(`${Math.round(v).toLocaleString('ru-RU')} ${unit}`)
+    }
+  }
+  for (const [k, v] of Object.entries(sums)) {
+    if (order.includes(k) || !v) continue
+    parts.push(`${Math.round(v).toLocaleString('ru-RU')} ${k}`)
+  }
+  return parts.join(' · ')
 }
