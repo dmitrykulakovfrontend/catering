@@ -47,22 +47,9 @@ export default async function Image() {
       >
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, rgba(200,169,107,0.10) 1px, transparent 0)",
-            backgroundSize: "28px 28px",
-            opacity: 0.45,
-          }}
-        />
-
-        <div
-          style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            zIndex: 1,
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -80,7 +67,7 @@ export default async function Image() {
           >
             <span
               style={{
-                display: "inline-block",
+                display: "flex",
                 width: 10,
                 height: 10,
                 background: "#C8A96B",
@@ -96,7 +83,6 @@ export default async function Image() {
             display: "flex",
             flexDirection: "column",
             gap: 22,
-            zIndex: 1,
           }}
         >
           <div
@@ -140,7 +126,6 @@ export default async function Image() {
             gap: 48,
             borderTop: "1px solid rgba(200,169,107,0.25)",
             paddingTop: 28,
-            zIndex: 1,
           }}
         >
           {stats.map((s) => (
