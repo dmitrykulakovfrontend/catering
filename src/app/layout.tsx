@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
 import { SITE_URL } from "@/lib/siteUrl";
 import "./globals.css";
 
@@ -98,6 +99,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-[#F7F8FB] text-[#1A1A1A] font-sans">
         {children}
         <Toaster position="top-right" richColors />
+        <Analytics />
       </body>
     </html>
   );

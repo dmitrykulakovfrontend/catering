@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
-export const alt = "Любимый Кейтеринг — Кейтеринг в Москве";
+export const alt = "LoVely Catering — Кейтеринг в Москве";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -12,10 +14,12 @@ async function loadFont(file: string): Promise<ArrayBuffer> {
 }
 
 export default async function Image() {
-  const [playfair, inter] = await Promise.all([
+  const [playfair, inter, logoBase64] = await Promise.all([
     loadFont("playfair-display@latest/files/playfair-display-cyrillic-700-normal.woff"),
     loadFont("inter@latest/files/inter-cyrillic-500-normal.woff"),
+    readFile(join(process.cwd(), "public/logo-light.png"), "base64"),
   ]);
+  const logoSrc = `data:image/png;base64,${logoBase64}`;
 
   const stats = [
     { value: "500+", label: "мероприятий" },
@@ -33,49 +37,100 @@ export default async function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: "80px",
+          padding: "72px 80px",
           background:
-            "linear-gradient(135deg, #111827 0%, #1F2937 60%, #312E81 100%)",
+            "radial-gradient(130% 95% at 18% 8%, #1E3FCC 0%, #162E99 40%, #0F1F66 100%)",
           color: "white",
           fontFamily: "Inter",
+          position: "relative",
         }}
       >
         <div
           style={{
+            position: "absolute",
+            inset: 0,
             display: "flex",
-            fontSize: 22,
-            letterSpacing: "0.25em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.7)",
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, rgba(200,169,107,0.10) 1px, transparent 0)",
+            backgroundSize: "28px 28px",
+            opacity: 0.45,
+          }}
+        />
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            zIndex: 1,
           }}
         >
-          Кейтеринг в Москве · 10 лет опыта
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={logoSrc} height={120} alt="LoVely Catering" />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              fontSize: 20,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              color: "#D4B896",
+            }}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                width: 10,
+                height: 10,
+                background: "#C8A96B",
+                transform: "rotate(45deg)",
+              }}
+            />
+            Кейтеринг в Москве
+          </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 22,
+            zIndex: 1,
+          }}
+        >
           <div
             style={{
               display: "flex",
               fontFamily: "Playfair",
-              fontSize: 110,
-              lineHeight: 1.05,
+              fontSize: 120,
+              lineHeight: 1.0,
               fontWeight: 700,
+              letterSpacing: "-0.02em",
               maxWidth: 1000,
             }}
           >
-            Любимый кейтеринг
+            LoVely Catering
           </div>
           <div
             style={{
               display: "flex",
-              fontSize: 32,
-              color: "rgba(255,255,255,0.8)",
-              maxWidth: 900,
-              lineHeight: 1.35,
+              alignItems: "center",
+              gap: 18,
             }}
           >
-            Банкеты, фуршеты, корпоративы и свадьбы. Авторское меню и сервис
-            под ключ.
+            <div style={{ display: "flex", width: 56, height: 2, background: "#C8A96B" }} />
+            <div
+              style={{
+                display: "flex",
+                fontSize: 30,
+                color: "rgba(255,255,255,0.82)",
+                maxWidth: 900,
+                lineHeight: 1.35,
+              }}
+            >
+              Банкеты · Фуршеты · Корпоративы · Свадьбы
+            </div>
           </div>
         </div>
 
@@ -83,8 +138,9 @@ export default async function Image() {
           style={{
             display: "flex",
             gap: 48,
-            borderTop: "1px solid rgba(255,255,255,0.15)",
-            paddingTop: 32,
+            borderTop: "1px solid rgba(200,169,107,0.25)",
+            paddingTop: 28,
+            zIndex: 1,
           }}
         >
           {stats.map((s) => (
@@ -98,6 +154,7 @@ export default async function Image() {
                   fontFamily: "Playfair",
                   fontSize: 44,
                   fontWeight: 700,
+                  color: "#E8D5A8",
                 }}
               >
                 {s.value}
@@ -105,11 +162,11 @@ export default async function Image() {
               <div
                 style={{
                   display: "flex",
-                  fontSize: 18,
+                  fontSize: 16,
                   color: "rgba(255,255,255,0.55)",
                   textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  marginTop: 4,
+                  letterSpacing: "0.14em",
+                  marginTop: 6,
                 }}
               >
                 {s.label}
