@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
@@ -18,9 +19,11 @@ export default function AdminSidebar() {
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-neutral-200 bg-white">
       <div className="border-b border-neutral-200 px-3 py-2 flex justify-center">
         <Link href="/admin" className="block">
-          <img
+          <Image
             src="/logo.png"
             alt="Любимый Кейтеринг"
+            width={867}
+            height={729}
             className="h-24 w-auto"
           />
         </Link>

@@ -1,5 +1,7 @@
 import Image from "next/image";
+import { Users, Phone } from "lucide-react";
 import { formatPrice } from "@/lib/calculations";
+import { formatPhone, phoneTelHref } from "@/lib/phone";
 import { ManagerInfo } from "@/types";
 
 export default function Hero({
@@ -33,9 +35,11 @@ export default function Hero({
           <div className="rounded-2xl bg-neutral-900/60 backdrop-blur-sm p-6 sm:p-8">
             {/* Brand + Manager row */}
             <div className="flex items-start justify-between mb-5">
-              <img
+              <Image
                 src="/logo-light.png"
                 alt="Любимый Кейтеринг"
+                width={867}
+                height={729}
                 className="h-14 sm:h-16 w-auto"
               />
               <div className="text-right hidden sm:block">
@@ -53,21 +57,7 @@ export default function Hero({
               {eventTitle}
             </h1>
             <p className="flex items-center gap-2 text-sm text-white/60 mb-6 animate-fade-up delay-1">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
+              <Users size={16} strokeWidth={2} />
               {persons} персон
             </p>
 
@@ -97,22 +87,11 @@ export default function Hero({
               </p>
               {manager.phone && (
                 <a
-                  href={`tel:${manager.phone.replace(/\s/g, "")}`}
+                  href={phoneTelHref(manager.phone)}
                   className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                  {manager.phone}
+                  <Phone size={16} strokeWidth={2} />
+                  {formatPhone(manager.phone)}
                 </a>
               )}
             </div>

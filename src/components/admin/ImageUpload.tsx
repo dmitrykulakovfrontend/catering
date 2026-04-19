@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -40,7 +41,7 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
     <div className="space-y-2">
       {value && (
         <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-neutral-200">
-          <img src={value} alt="" className="h-full w-full object-cover" />
+          <Image src={value} alt="" fill sizes="80px" className="object-cover" />
         </div>
       )}
       <div className="flex items-center gap-2">

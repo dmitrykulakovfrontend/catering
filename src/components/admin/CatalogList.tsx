@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { deleteCategory, deleteDish, reorderCategories } from '@/lib/actions'
@@ -107,11 +108,15 @@ export default function CatalogList({ categories }: { categories: Category[] }) 
                     className="flex items-center gap-4 px-6 py-3 hover:bg-royal-50/30 transition-colors"
                   >
                     {dish.image ? (
-                      <img
-                        src={dish.image}
-                        alt={dish.name}
-                        className="h-10 w-10 rounded-lg object-cover"
-                      />
+                      <div className="relative h-10 w-10 flex-shrink-0">
+                        <Image
+                          src={dish.image}
+                          alt={dish.name}
+                          fill
+                          sizes="40px"
+                          className="rounded-lg object-cover"
+                        />
+                      </div>
                     ) : (
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 text-neutral-400 text-xs">
                         ◇

@@ -1,5 +1,6 @@
 import { MenuStats } from "@/types";
 import { formatPrice, formatWeight, formatVolume } from "@/lib/calculations";
+import { phoneTelHref } from "@/lib/phone";
 
 export default function StatsSummary({
   stats,
@@ -73,14 +74,14 @@ export default function StatsSummary({
 
         {/* Grand total banner — warm espresso with champagne accents */}
         <div
-          className="relative rounded-2xl overflow-hidden px-6 py-10 sm:py-12 text-center bg-[#25201c] shadow-[0_24px_60px_-24px_rgba(37,32,28,0.45)]"
+          className="relative rounded-2xl overflow-hidden px-6 py-10 sm:py-12 text-center bg-[#473b33] shadow-[0_24px_60px_-24px_rgba(71,59,51,0.4)]"
         >
           {/* Radial warm highlight — light catching on polished surface */}
           <div
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(130% 95% at 18% 8%, #7a6253 0%, #463830 42%, #25201c 100%)",
+                "radial-gradient(130% 95% at 18% 8%, #b39680 0%, #6e5a4c 42%, #473b33 100%)",
             }}
           />
           {/* Soft champagne dot texture */}
@@ -122,8 +123,8 @@ export default function StatsSummary({
         {/* CTA — espresso button, champagne hairlines, restaurant-grade weight */}
         {managerPhone && (
           <a
-            href={`tel:${managerPhone.replace(/\s/g, "")}`}
-            className="mt-6 group relative flex w-full max-w-sm mx-auto items-center justify-center rounded-xl bg-[#25201c] py-3.5 text-[13px] font-semibold tracking-[0.2em] uppercase text-[#faf4e8] shadow-[0_12px_30px_-12px_rgba(37,32,28,0.5)] ring-1 ring-[#d4b896]/15 hover:bg-[#362d26] active:bg-[#1b1714] transition-colors"
+            href={phoneTelHref(managerPhone)}
+            className="mt-6 group relative flex w-full max-w-sm mx-auto items-center justify-center rounded-xl bg-[#473b33] py-3.5 text-[13px] font-semibold tracking-[0.2em] uppercase text-[#faf4e8] shadow-[0_12px_30px_-12px_rgba(71,59,51,0.5)] ring-1 ring-[#d4b896]/15 hover:bg-[#594a40] active:bg-[#362d27] transition-colors"
           >
             <span className="inline-flex items-center gap-3">
               <span className="w-5 h-px bg-[#d4b896]/60 transition-all group-hover:w-8" />

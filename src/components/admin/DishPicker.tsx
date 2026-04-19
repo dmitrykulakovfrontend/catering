@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 
 interface Dish {
@@ -71,7 +72,9 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
                         className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-royal-50"
                       >
                         {dish.image ? (
-                          <img src={dish.image} alt="" className="h-9 w-9 rounded-md object-cover" />
+                          <div className="relative h-9 w-9 flex-shrink-0">
+                            <Image src={dish.image} alt="" fill sizes="36px" className="rounded-md object-cover" />
+                          </div>
                         ) : (
                           <div className="flex h-9 w-9 items-center justify-center rounded-md bg-neutral-100 text-xs text-neutral-400">◇</div>
                         )}

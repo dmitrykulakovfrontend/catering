@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -447,7 +448,9 @@ export default function QuoteEditor({
                       <button onClick={() => moveItem(sIdx, iIdx, 1)} disabled={iIdx === section.items.length - 1} className="text-[10px] text-neutral-400 hover:text-neutral-600 disabled:opacity-30">▼</button>
                     </div>
                     {item.image ? (
-                      <img src={item.image} alt="" className="h-8 w-8 rounded object-cover" />
+                      <div className="relative h-8 w-8 flex-shrink-0">
+                        <Image src={item.image} alt="" fill sizes="32px" className="rounded object-cover" />
+                      </div>
                     ) : (
                       <div className="flex h-8 w-8 items-center justify-center rounded bg-neutral-100 text-[10px] text-neutral-400">◇</div>
                     )}

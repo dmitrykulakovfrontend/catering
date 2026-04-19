@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { MenuItem as MenuItemType } from '@/types';
 import { formatPrice } from '@/lib/calculations';
 
@@ -29,11 +30,13 @@ export default function WelcomeSection({ items }: { items: MenuItemType[] }) {
             const total = item.pricePerUnit * item.quantity;
             return (
               <div key={item.id} className="card-surface flex gap-3 p-3.5 sm:p-4">
-                <div className="relative flex-shrink-0">
-                  <img
+                <div className="relative flex-shrink-0 h-[80px] w-[80px] sm:h-[88px] sm:w-[88px]">
+                  <Image
                     src={item.image}
                     alt={item.name}
-                    className="h-[80px] w-[80px] sm:h-[88px] sm:w-[88px] rounded-lg object-cover bg-neutral-100"
+                    fill
+                    sizes="88px"
+                    className="rounded-lg object-cover bg-neutral-100"
                   />
                   <span className="absolute bottom-1.5 left-1.5 bg-royal-600/90 backdrop-blur-sm text-white text-[10px] font-semibold px-1.5 py-[3px] rounded-md leading-none">
                     {item.weight}&nbsp;{item.weightUnit}
@@ -80,11 +83,13 @@ export default function WelcomeSection({ items }: { items: MenuItemType[] }) {
               const total = item.pricePerUnit * item.quantity;
               return (
                 <div key={item.id} className="flex items-center gap-3 rounded-full bg-white border border-neutral-100 shadow-[0_1px_3px_rgba(0,0,0,0.03)] pl-1.5 pr-5 py-1.5">
-                  <div className="relative flex-shrink-0">
-                    <img
+                  <div className="relative flex-shrink-0 h-16 w-16">
+                    <Image
                       src={item.image}
                       alt={item.name}
-                      className="h-16 w-16 rounded-full object-cover bg-neutral-100"
+                      fill
+                      sizes="64px"
+                      className="rounded-full object-cover bg-neutral-100"
                     />
                     <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-royal-600/90 backdrop-blur-sm text-white text-[9px] font-semibold px-1.5 py-[2px] rounded-full leading-none whitespace-nowrap">
                       {item.weight}&nbsp;{item.weightUnit}

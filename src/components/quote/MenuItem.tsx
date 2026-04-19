@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { formatPrice } from '@/lib/calculations';
 import { MenuItem as MenuItemType } from '@/types';
 
@@ -7,11 +8,13 @@ export default function MenuItem({ item }: { item: MenuItemType }) {
   return (
     <div className="card-surface flex gap-4 p-3.5 sm:p-4">
       {/* Image with weight badge */}
-      <div className="relative flex-shrink-0">
-        <img
+      <div className="relative flex-shrink-0 h-[88px] w-[88px] sm:h-[100px] sm:w-[100px]">
+        <Image
           src={item.image}
           alt={item.name}
-          className="h-[88px] w-[88px] sm:h-[100px] sm:w-[100px] rounded-lg object-cover bg-neutral-100"
+          fill
+          sizes="100px"
+          className="rounded-lg object-cover bg-neutral-100"
         />
         <span className="absolute bottom-1.5 left-1.5 bg-royal-600/90 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-[3px] rounded-md leading-none">
           {item.weight}&nbsp;{item.weightUnit}
