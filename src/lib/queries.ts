@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { prisma } from './prisma'
 import { formatDateRu } from './utils'
 import type { MenuData, MenuCategory, MenuItem, ServiceItem, ManagerInfo } from '@/types'
@@ -79,7 +80,7 @@ export async function getQuoteById(id: string) {
   })
 }
 
-export async function getQuoteBySlug(slug: string) {
+export const getQuoteBySlug = cache(async (slug: string) => {
   return prisma.quote.findUnique({
     where: { slug },
     include: {
@@ -92,11 +93,18 @@ export async function getQuoteBySlug(slug: string) {
       services: { orderBy: { order: 'asc' } },
     },
   })
-}
+})
 
 export async function getAllPublishedSlugs() {
   return prisma.quote.findMany({
     select: { slug: true },
+  })
+}
+
+export async function getAllPublishedQuotesForSitemap() {
+  return prisma.quote.findMany({
+    select: { slug: true, updatedAt: true },
+    orderBy: { updatedAt: 'desc' },
   })
 }
 
