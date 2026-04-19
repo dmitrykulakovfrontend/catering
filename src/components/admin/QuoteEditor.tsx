@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { saveQuote } from '@/lib/actions'
@@ -110,6 +110,35 @@ export default function QuoteEditor({
   const [dishPickerSection, setDishPickerSection] = useState<number | null>(null)
   const [showServicePicker, setShowServicePicker] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [collapsedSections, setCollapsedSections] = useState<number[]>([])
+  const [collapsedMeta, setCollapsedMeta] = useState(!!quoteId)
+  const [collapsedServices, setCollapsedServices] = useState(false)
+
+  function isSectionCollapsed(idx: number) {
+    return collapsedSections.includes(idx)
+  }
+
+  function toggleSection(idx: number) {
+    setCollapsedSections((prev) => (prev.includes(idx) ? prev.filter((x) => x !== idx) : [...prev, idx]))
+  }
+
+  function collapseAllSections() {
+    setCollapsedSections(sections.map((_, i) => i))
+  }
+
+  function expandAllSections() {
+    setCollapsedSections([])
+  }
+
+  const sectionSubtotals = useMemo(
+    () => sections.map((s) => s.items.reduce((sum, it) => sum + it.pricePerUnit * it.quantity, 0)),
+    [sections],
+  )
+  const servicesSubtotal = services.reduce(
+    (sum, svc) => sum + (svc.isPerPerson ? svc.price * form.persons : svc.price * svc.quantity),
+    0,
+  )
+  const allSectionsCollapsed = sections.length > 0 && collapsedSections.length === sections.length
 
   // Auto-generate slug when title/name changes (only for new quotes)
   function updateSlug() {
@@ -291,9 +320,25 @@ export default function QuoteEditor({
   return (
     <div className="space-y-8">
       {/* ─── Header fields ──────────────────────────── */}
-      <div className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-5 font-semibold text-neutral-900">Информация о банкете</h2>
-        <div className="grid grid-cols-2 gap-4">
+      <div className="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setCollapsedMeta((v) => !v)}
+          className="flex w-full items-center gap-2 border-b border-neutral-100 bg-neutral-50 px-6 py-3 text-left"
+          aria-expanded={!collapsedMeta}
+        >
+          <span className={`inline-flex h-6 w-6 items-center justify-center text-xs text-neutral-500 transition-transform ${collapsedMeta ? '' : 'rotate-90'}`}>▶</span>
+          <h2 className="font-semibold text-neutral-900">Информация о банкете</h2>
+          {collapsedMeta && (
+            <span className="ml-2 truncate text-xs text-neutral-500">
+              {form.eventTitle || 'Без названия'}
+              {form.managerName && ` · ${form.managerName}`}
+              {` · ${form.persons} чел.`}
+            </span>
+          )}
+        </button>
+        {!collapsedMeta && (
+        <div className="grid grid-cols-2 gap-4 p-6">
           <div className="col-span-2">
             <label className="block text-sm font-medium text-neutral-700">Название мероприятия</label>
             <input
@@ -376,12 +421,24 @@ export default function QuoteEditor({
             />
           </div>
         </div>
+        )}
       </div>
 
       {/* ─── Sections ──────────────────────────────── */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-neutral-900">Разделы меню</h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-3">
+            <h2 className="font-semibold text-neutral-900">Разделы меню</h2>
+            {sections.length > 0 && (
+              <button
+                type="button"
+                onClick={allSectionsCollapsed ? expandAllSections : collapseAllSections}
+                className="rounded-md border border-neutral-200 bg-white px-2.5 py-1 text-[11px] font-medium text-neutral-600 hover:border-royal-300 hover:text-royal-700"
+              >
+                {allSectionsCollapsed ? 'Развернуть всё' : 'Свернуть всё'}
+              </button>
+            )}
+          </div>
           <div className="flex gap-2">
             <button
               onClick={() => addSection('banquet')}
@@ -404,9 +461,21 @@ export default function QuoteEditor({
           </div>
         )}
 
-        {sections.map((section, sIdx) => (
+        {sections.map((section, sIdx) => {
+          const fold = isSectionCollapsed(sIdx)
+          const sub = sectionSubtotals[sIdx]
+          return (
           <div key={sIdx} className="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
-            <div className="flex items-center gap-3 border-b border-neutral-100 bg-neutral-50 px-5 py-3">
+            <div className="flex flex-wrap items-center gap-2 border-b border-neutral-100 bg-neutral-50 px-5 py-3">
+              <button
+                type="button"
+                onClick={() => toggleSection(sIdx)}
+                className="inline-flex h-6 w-6 items-center justify-center rounded text-xs text-neutral-500 hover:bg-neutral-200"
+                aria-expanded={!fold}
+                title={fold ? 'Развернуть' : 'Свернуть'}
+              >
+                <span className={`transition-transform ${fold ? '' : 'rotate-90'}`}>▶</span>
+              </button>
               <div className="flex gap-1">
                 <button onClick={() => moveSection(sIdx, -1)} disabled={sIdx === 0} className="rounded px-1 text-neutral-400 hover:text-neutral-600 disabled:opacity-30">↑</button>
                 <button onClick={() => moveSection(sIdx, 1)} disabled={sIdx === sections.length - 1} className="rounded px-1 text-neutral-400 hover:text-neutral-600 disabled:opacity-30">↓</button>
@@ -416,16 +485,24 @@ export default function QuoteEditor({
                 value={section.title}
                 onChange={(e) => updateSectionTitle(sIdx, e.target.value)}
                 placeholder="Название раздела"
-                className="flex-1 rounded-md border border-neutral-200 px-2 py-1 text-sm font-medium focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+                className="flex-1 min-w-32 rounded-md border border-neutral-200 bg-white px-2 py-1 text-sm font-medium focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
               />
-              <span className="text-xs text-neutral-400">
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                section.type === 'welcome' ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200' : 'bg-royal-50 text-royal-700 ring-1 ring-royal-200'
+              }`}>
                 {section.type === 'welcome' ? 'welcome' : 'банкет'}
+              </span>
+              <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-neutral-600 ring-1 ring-neutral-200">
+                {section.items.length} {pluralItems(section.items.length)}
+              </span>
+              <span className="text-xs font-semibold text-neutral-700">
+                {sub.toLocaleString('ru-RU')} ₽
               </span>
               <button
                 onClick={() => setDishPickerSection(sIdx)}
                 className="rounded-md bg-royal-500 px-3 py-1 text-xs font-medium text-white hover:bg-royal-600"
               >
-                Добавить блюдо
+                + Блюдо
               </button>
               <button
                 onClick={() => removeSection(sIdx)}
@@ -435,7 +512,7 @@ export default function QuoteEditor({
               </button>
             </div>
 
-            {section.items.length === 0 ? (
+            {!fold && (section.items.length === 0 ? (
               <div className="px-5 py-6 text-center text-sm text-neutral-400">
                 Нет блюд. Нажмите «Добавить блюдо».
               </div>
@@ -448,7 +525,7 @@ export default function QuoteEditor({
                       <button onClick={() => moveItem(sIdx, iIdx, 1)} disabled={iIdx === section.items.length - 1} className="text-[10px] text-neutral-400 hover:text-neutral-600 disabled:opacity-30">▼</button>
                     </div>
                     {item.image ? (
-                      <div className="relative h-8 w-8 flex-shrink-0">
+                      <div className="relative h-8 w-8 shrink-0">
                         <Image src={item.image} alt="" fill sizes="32px" className="rounded object-cover" />
                       </div>
                     ) : (
@@ -492,24 +569,41 @@ export default function QuoteEditor({
                   </div>
                 ))}
               </div>
-            )}
+            ))}
           </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* ─── Services ──────────────────────────────── */}
       <div className="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between border-b border-neutral-100 bg-neutral-50 px-5 py-3">
-          <h2 className="font-semibold text-neutral-900">Услуги</h2>
+        <div className="flex flex-wrap items-center gap-2 border-b border-neutral-100 bg-neutral-50 px-5 py-3">
           <button
-            onClick={() => setShowServicePicker(true)}
-            className="rounded-md bg-royal-500 px-3 py-1 text-xs font-medium text-white hover:bg-royal-600"
+            type="button"
+            onClick={() => setCollapsedServices((v) => !v)}
+            className="inline-flex h-6 w-6 items-center justify-center rounded text-xs text-neutral-500 hover:bg-neutral-200"
+            aria-expanded={!collapsedServices}
           >
-            Добавить услугу
+            <span className={`transition-transform ${collapsedServices ? '' : 'rotate-90'}`}>▶</span>
           </button>
+          <h2 className="font-semibold text-neutral-900">Услуги</h2>
+          <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-neutral-600 ring-1 ring-neutral-200">
+            {services.length}
+          </span>
+          <span className="text-xs font-semibold text-neutral-700">
+            {servicesSubtotal.toLocaleString('ru-RU')} ₽
+          </span>
+          <div className="ml-auto">
+            <button
+              onClick={() => setShowServicePicker(true)}
+              className="rounded-md bg-royal-500 px-3 py-1 text-xs font-medium text-white hover:bg-royal-600"
+            >
+              + Услугу
+            </button>
+          </div>
         </div>
 
-        {services.length === 0 ? (
+        {!collapsedServices && (services.length === 0 ? (
           <div className="px-5 py-6 text-center text-sm text-neutral-400">
             Нет услуг. Нажмите «Добавить услугу».
           </div>
@@ -562,16 +656,31 @@ export default function QuoteEditor({
               </div>
             ))}
           </div>
-        )}
+        ))}
       </div>
 
       {/* ─── Bottom bar ────────────────────────────── */}
-      <div className="sticky bottom-0 flex items-center justify-between rounded-xl border border-neutral-200 bg-white px-6 py-4 shadow-lg">
-        <div className="text-sm">
-          <span className="text-neutral-500">Итого: </span>
-          <span className="text-lg font-bold text-royal-500">
-            {calculateTotal().toLocaleString('ru-RU')} ₽
-          </span>
+      <div className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-6 py-4 shadow-lg">
+        <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1 text-sm">
+          <div>
+            <span className="text-neutral-500">Итого: </span>
+            <span className="text-lg font-bold text-royal-500">
+              {calculateTotal().toLocaleString('ru-RU')} ₽
+            </span>
+          </div>
+          {form.persons > 0 && (
+            <div className="text-xs text-neutral-500">
+              ≈ <span className="font-semibold text-neutral-700">{Math.round(calculateTotal() / form.persons).toLocaleString('ru-RU')} ₽</span> / чел.
+            </div>
+          )}
+          <div className="text-xs text-neutral-500">
+            Меню: <span className="font-semibold text-neutral-700">{sectionSubtotals.reduce((a, b) => a + b, 0).toLocaleString('ru-RU')} ₽</span>
+            {services.length > 0 && (
+              <>
+                {' · '}Услуги: <span className="font-semibold text-neutral-700">{servicesSubtotal.toLocaleString('ru-RU')} ₽</span>
+              </>
+            )}
+          </div>
         </div>
         <div className="flex gap-3">
           <button
@@ -602,4 +711,12 @@ export default function QuoteEditor({
       )}
     </div>
   )
+}
+
+function pluralItems(n: number) {
+  const mod10 = n % 10
+  const mod100 = n % 100
+  if (mod10 === 1 && mod100 !== 11) return 'блюдо'
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'блюда'
+  return 'блюд'
 }

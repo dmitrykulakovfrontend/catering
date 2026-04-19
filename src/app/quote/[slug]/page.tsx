@@ -24,21 +24,22 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const quote = await getQuoteBySlug(slug);
-  if (!quote) return { title: "Не найдено" };
-  const description = `${quote.persons} персон · ${quote.eventTime} · Банкетное меню от Любимого Кейтеринга`;
+  if (!quote) return { title: { absolute: "Не найдено" } };
+  const title = `${quote.eventTitle} · ${quote.persons} персон · ${quote.eventTime}`;
+  const description = `Банкетное меню на ${quote.persons} персон, ${quote.eventTime}. Расчёт стоимости, состав блюд, сервис под ключ.`;
   return {
-    title: quote.eventTitle,
+    title: { absolute: title },
     description,
     alternates: { canonical: `/quote/${slug}` },
     openGraph: {
-      title: quote.eventTitle,
+      title,
       description,
       url: `/quote/${slug}`,
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: quote.eventTitle,
+      title,
       description,
     },
   };

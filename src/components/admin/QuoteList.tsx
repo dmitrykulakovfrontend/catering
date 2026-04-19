@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { deleteQuote } from '@/lib/actions'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import DeleteConfirmDialog from './DeleteConfirmDialog'
 
 interface QuoteSummary {
@@ -17,6 +17,45 @@ interface QuoteSummary {
 
 export default function QuoteList({ quotes }: { quotes: QuoteSummary[] }) {
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
+  const [sortKey, setSortKey] = useState<'updated' | 'title' | 'manager' | 'persons'>('updated')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
+
+  const visible = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    let list = quotes
+    if (q) {
+      list = list.filter(
+        (x) =>
+          x.eventTitle.toLowerCase().includes(q) ||
+          x.managerName.toLowerCase().includes(q) ||
+          x.slug.toLowerCase().includes(q),
+      )
+    }
+    const sorted = [...list].sort((a, b) => {
+      let cmp = 0
+      if (sortKey === 'updated') cmp = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+      else if (sortKey === 'title') cmp = a.eventTitle.localeCompare(b.eventTitle, 'ru')
+      else if (sortKey === 'manager') cmp = a.managerName.localeCompare(b.managerName, 'ru')
+      else if (sortKey === 'persons') cmp = a.persons - b.persons
+      return sortDir === 'asc' ? cmp : -cmp
+    })
+    return sorted
+  }, [quotes, search, sortKey, sortDir])
+
+  function toggleSort(key: typeof sortKey) {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSortKey(key)
+      setSortDir(key === 'title' || key === 'manager' ? 'asc' : 'desc')
+    }
+  }
+
+  function arrow(key: typeof sortKey) {
+    if (sortKey !== key) return <span className="text-neutral-300">↕</span>
+    return <span className="text-royal-500">{sortDir === 'asc' ? '↑' : '↓'}</span>
+  }
 
   function copyLink(slug: string) {
     const url = `${window.location.origin}/quote/${slug}`
@@ -51,19 +90,66 @@ export default function QuoteList({ quotes }: { quotes: QuoteSummary[] }) {
 
   return (
     <>
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <div className="relative min-w-48 flex-1">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">⌕</span>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Поиск по названию, менеджеру или ссылке…"
+            className="w-full rounded-lg border border-neutral-200 bg-white pl-9 pr-9 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-xs text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        <span className="text-xs text-neutral-500">
+          {visible.length} из {quotes.length}
+        </span>
+      </div>
+
       <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-neutral-100 bg-neutral-50">
             <tr>
-              <th className="px-6 py-3 font-medium text-neutral-500">Название</th>
-              <th className="px-6 py-3 font-medium text-neutral-500">Менеджер</th>
-              <th className="px-6 py-3 font-medium text-neutral-500">Персон</th>
-              <th className="px-6 py-3 font-medium text-neutral-500">Дата</th>
+              <th className="px-6 py-3 font-medium text-neutral-500">
+                <button onClick={() => toggleSort('title')} className="inline-flex items-center gap-1 hover:text-neutral-900">
+                  Название {arrow('title')}
+                </button>
+              </th>
+              <th className="px-6 py-3 font-medium text-neutral-500">
+                <button onClick={() => toggleSort('manager')} className="inline-flex items-center gap-1 hover:text-neutral-900">
+                  Менеджер {arrow('manager')}
+                </button>
+              </th>
+              <th className="px-6 py-3 font-medium text-neutral-500">
+                <button onClick={() => toggleSort('persons')} className="inline-flex items-center gap-1 hover:text-neutral-900">
+                  Персон {arrow('persons')}
+                </button>
+              </th>
+              <th className="px-6 py-3 font-medium text-neutral-500">
+                <button onClick={() => toggleSort('updated')} className="inline-flex items-center gap-1 hover:text-neutral-900">
+                  Дата {arrow('updated')}
+                </button>
+              </th>
               <th className="px-6 py-3 font-medium text-neutral-500"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-100">
-            {quotes.map((q) => (
+            {visible.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-6 py-10 text-center text-sm text-neutral-400">
+                  Ничего не найдено
+                </td>
+              </tr>
+            )}
+            {visible.map((q) => (
               <tr key={q.id} className="hover:bg-royal-50/40 transition-colors">
                 <td className="px-6 py-4">
                   <Link
