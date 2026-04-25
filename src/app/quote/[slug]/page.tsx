@@ -6,6 +6,8 @@ import {
 } from "@/lib/queries";
 import { calculateStats } from "@/lib/calculations";
 import Hero from "@/components/quote/Hero";
+import YesButContrast from "@/components/quote/YesButContrast";
+import QuotePromise from "@/components/quote/QuotePromise";
 import QuoteMenu from "@/components/quote/QuoteMenu";
 import StatsSummary from "@/components/quote/StatsSummary";
 import Footer from "@/components/Footer";
@@ -70,9 +72,13 @@ export default async function QuotePage({
         validUntil={menuData.validUntil}
       />
 
+      <QuotePromise />
+
       <QuoteMenu menuData={menuData} />
 
       <StatsSummary stats={stats} managerPhone={menuData.manager.phone} />
+
+      <YesButContrast />
 
       <Footer phone={menuData.manager.phone} ctaClassName="bg-cream" />
     </div>

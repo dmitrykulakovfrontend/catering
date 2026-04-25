@@ -13,7 +13,9 @@
       "Bash(vercel --version)",
       "Bash(xargs grep:*)",
       "Bash(npm install:*)",
-      "Bash(npx prisma:*)"
+      "Bash(npx prisma:*)",
+      "WebSearch",
+      "WebFetch(domain:unsplash.com)"
     ]
   }
 }
