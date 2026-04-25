@@ -2,6 +2,8 @@ import { parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js'
 
 const DEFAULT_COUNTRY: CountryCode = 'RU'
 
+export const DEFAULT_PHONE_RAW = '7(964)7611900'
+
 function normalize(raw: string): string {
   const input = raw.trim()
   if (/^\+8\d{10}$/.test(input)) return '+7' + input.slice(2)

@@ -4,23 +4,19 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { createServiceTemplate } from '@/lib/actions'
-
-interface ServiceTemplate {
-  id: string
-  name: string
-  defaultPrice: number
-  isPerPerson: boolean
-}
+import type { ServiceTemplateRow } from '@/types/admin'
+import { PANEL_INPUT } from '@/lib/ui-classes'
+import Modal from './ui/Modal'
 
 interface ServicePickerProps {
-  services: ServiceTemplate[]
-  onSelect: (service: ServiceTemplate) => void
+  services: ServiceTemplateRow[]
+  onSelect: (service: ServiceTemplateRow) => void
   onClose: () => void
 }
 
 export default function ServicePicker({ services, onSelect, onClose }: ServicePickerProps) {
   const router = useRouter()
-  const [localServices, setLocalServices] = useState<ServiceTemplate[]>(services)
+  const [localServices, setLocalServices] = useState<ServiceTemplateRow[]>(services)
   const [search, setSearch] = useState('')
   const [creating, setCreating] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -28,6 +24,9 @@ export default function ServicePicker({ services, onSelect, onClose }: ServicePi
 
   const nameRef = useRef<HTMLInputElement>(null)
 
+  // Mirror props into local state so we can optimistically insert new
+  // services before the server revalidates. When the server data arrives,
+  // its ids are a superset of ours — safe to replace.
   useEffect(() => {
     setLocalServices(services)
   }, [services])
@@ -35,17 +34,6 @@ export default function ServicePicker({ services, onSelect, onClose }: ServicePi
   useEffect(() => {
     if (creating) nameRef.current?.focus()
   }, [creating])
-
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        if (creating) setCreating(false)
-        else onClose()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [creating, onClose])
 
   const q = search.toLowerCase().trim()
   const filtered = q
@@ -66,16 +54,10 @@ export default function ServicePicker({ services, onSelect, onClose }: ServicePi
         isPerPerson: draft.isPerPerson,
         order: localServices.length,
       })
-      const merged: ServiceTemplate = {
-        id: created.id,
-        name: created.name,
-        defaultPrice: created.defaultPrice,
-        isPerPerson: created.isPerPerson,
-      }
-      setLocalServices((s) => [...s, merged])
+      setLocalServices((s) => [...s, created])
       toast.success('Услуга создана')
       router.refresh()
-      onSelect(merged)
+      onSelect(created)
       onClose()
     } catch {
       toast.error('Ошибка создания услуги')
@@ -84,17 +66,21 @@ export default function ServicePicker({ services, onSelect, onClose }: ServicePi
     }
   }
 
-  const panelInput =
-    'w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm shadow-sm transition focus:border-royal-500 focus:ring-2 focus:ring-royal-500/15 focus:outline-none'
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="fixed inset-0 bg-neutral-950/50 backdrop-blur-sm"
-        onClick={() => (creating ? setCreating(false) : onClose())}
-      />
-
-      <div className="relative z-10 flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-[0_30px_80px_-20px_rgba(15,31,102,0.35)] ring-1 ring-neutral-200/60">
+    <Modal
+      open
+      onClose={onClose}
+      backdropClassName="fixed inset-0 bg-neutral-950/50 backdrop-blur-sm"
+      panelClassName="relative z-10 flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-[0_30px_80px_-20px_rgba(15,31,102,0.35)] ring-1 ring-neutral-200/60"
+      onEscape={() => {
+        if (creating) { setCreating(false); return true }
+        return false
+      }}
+      onBackdropClick={() => {
+        if (creating) { setCreating(false); return true }
+        return false
+      }}
+    >
         {/* Header */}
         <div className="border-b border-neutral-100 bg-linear-to-b from-cream to-white px-6 pt-5 pb-4">
           <div className="flex items-start justify-between gap-4">
@@ -135,7 +121,7 @@ export default function ServicePicker({ services, onSelect, onClose }: ServicePi
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Поиск..."
-                className={`${panelInput} pl-9`}
+                className={`${PANEL_INPUT} pl-9`}
               />
             </div>
             <button
@@ -176,7 +162,7 @@ export default function ServicePicker({ services, onSelect, onClose }: ServicePi
                 value={draft.name}
                 onChange={(e) => setDraft({ ...draft, name: e.target.value })}
                 placeholder="Название (например, Обслуживание официантом)"
-                className={panelInput}
+                className={PANEL_INPUT}
               />
               <div className="grid grid-cols-5 gap-2.5">
                 <div className="col-span-3 relative">
@@ -188,7 +174,7 @@ export default function ServicePicker({ services, onSelect, onClose }: ServicePi
                     value={draft.defaultPrice || ''}
                     onChange={(e) => setDraft({ ...draft, defaultPrice: parseFloat(e.target.value) || 0 })}
                     placeholder="Цена"
-                    className={`${panelInput} pr-7`}
+                    className={`${PANEL_INPUT} pr-7`}
                   />
                   <span className="absolute top-1/2 right-3 -translate-y-1/2 text-xs text-neutral-400">₽</span>
                 </div>
@@ -296,7 +282,6 @@ export default function ServicePicker({ services, onSelect, onClose }: ServicePi
             Закрыть
           </button>
         </div>
-      </div>
 
       <style jsx>{`
         .animate-in {
@@ -313,7 +298,7 @@ export default function ServicePicker({ services, onSelect, onClose }: ServicePi
           }
         }
       `}</style>
-    </div>
+    </Modal>
   )
 }
 

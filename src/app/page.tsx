@@ -8,9 +8,7 @@ import Dishes from "@/components/landing/Dishes";
 import Process from "@/components/landing/Process";
 import Team from "@/components/landing/Team";
 import Footer from "@/components/Footer";
-import { formatPhone, phoneTelHref } from "@/lib/phone";
-
-const DEFAULT_PHONE = "7(964)7611900";
+import { formatPhone, phoneTelHref, DEFAULT_PHONE_RAW } from "@/lib/phone";
 
 export const metadata: Metadata = {
   title: "Любимый Кейтеринг — Кейтеринг в Москве",
@@ -27,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const raw = (await getSiteSetting("phone")) || DEFAULT_PHONE;
+  const raw = (await getSiteSetting("phone")) || DEFAULT_PHONE_RAW;
   const phone = formatPhone(raw);
   const phoneHref = phoneTelHref(raw);
 

@@ -28,7 +28,7 @@ export function formatDateRu(date: Date): string {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-  }) + ' г. ' + date.toLocaleTimeString('ru-RU', {
+  }) + ' ' + date.toLocaleTimeString('ru-RU', {
     hour: '2-digit',
     minute: '2-digit',
   })

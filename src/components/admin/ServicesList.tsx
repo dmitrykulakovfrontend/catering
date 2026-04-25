@@ -5,17 +5,10 @@ import { toast } from 'sonner'
 import { deleteServiceTemplate } from '@/lib/actions'
 import ServiceForm from './ServiceForm'
 import DeleteConfirmDialog from './DeleteConfirmDialog'
+import type { ServiceTemplateRow } from '@/types/admin'
 
-interface ServiceTemplate {
-  id: string
-  name: string
-  defaultPrice: number
-  isPerPerson: boolean
-  order: number
-}
-
-export default function ServicesList({ services }: { services: ServiceTemplate[] }) {
-  const [editing, setEditing] = useState<ServiceTemplate | null>(null)
+export default function ServicesList({ services }: { services: ServiceTemplateRow[] }) {
+  const [editing, setEditing] = useState<ServiceTemplateRow | null>(null)
   const [adding, setAdding] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
 

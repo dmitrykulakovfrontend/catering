@@ -3,17 +3,12 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { createServiceTemplate, updateServiceTemplate } from '@/lib/actions'
-
-interface ServiceData {
-  id?: string
-  name: string
-  defaultPrice: number
-  isPerPerson: boolean
-  order: number
-}
+import type { ServiceTemplateRow } from '@/types/admin'
+import { INPUT_BASE } from '@/lib/ui-classes'
+import Modal from './ui/Modal'
 
 interface ServiceFormProps {
-  service?: ServiceData
+  service?: ServiceTemplateRow
   onClose: () => void
 }
 
@@ -46,12 +41,10 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
-        <h3 className="text-lg font-semibold text-neutral-900 mb-5">
-          {service?.id ? 'Редактировать услугу' : 'Новая услуга'}
-        </h3>
+    <Modal open onClose={onClose}>
+      <h3 className="text-lg font-semibold text-neutral-900 mb-5">
+        {service?.id ? 'Редактировать услугу' : 'Новая услуга'}
+      </h3>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -61,7 +54,7 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="mt-1 block w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+              className={INPUT_BASE}
             />
           </div>
 
@@ -74,7 +67,7 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
               step="any"
               value={form.defaultPrice}
               onChange={(e) => setForm({ ...form, defaultPrice: parseFloat(e.target.value) || 0 })}
-              className="mt-1 block w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+              className={INPUT_BASE}
             />
           </div>
 
@@ -108,7 +101,6 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </Modal>
   )
 }

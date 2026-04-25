@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { createCategory } from '@/lib/actions'
+import { INPUT_FOCUS_RING } from '@/lib/ui-classes'
 
 export default function CategoryManager() {
   const [open, setOpen] = useState(false)
@@ -44,7 +45,7 @@ export default function CategoryManager() {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Название категории"
-        className="rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+        className={`rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm ${INPUT_FOCUS_RING}`}
       />
       <button
         type="submit"

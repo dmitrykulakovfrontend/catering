@@ -5,15 +5,8 @@ import { toast } from 'sonner'
 import { deleteQuote } from '@/lib/actions'
 import { useMemo, useState } from 'react'
 import DeleteConfirmDialog from './DeleteConfirmDialog'
-
-interface QuoteSummary {
-  id: string
-  slug: string
-  eventTitle: string
-  managerName: string
-  persons: number
-  updatedAt: Date
-}
+import type { QuoteSummary } from '@/types/admin'
+import { INPUT_FOCUS_RING } from '@/lib/ui-classes'
 
 export default function QuoteList({ quotes }: { quotes: QuoteSummary[] }) {
   const [deleteId, setDeleteId] = useState<string | null>(null)
@@ -98,7 +91,7 @@ export default function QuoteList({ quotes }: { quotes: QuoteSummary[] }) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Поиск по названию, менеджеру или ссылке…"
-            className="w-full rounded-lg border border-neutral-200 bg-white pl-9 pr-9 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+            className={`w-full rounded-lg border border-neutral-200 bg-white pl-9 pr-9 py-2 text-sm shadow-sm ${INPUT_FOCUS_RING}`}
           />
           {search && (
             <button

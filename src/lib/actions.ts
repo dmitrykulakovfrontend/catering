@@ -121,6 +121,38 @@ export async function deleteServiceTemplate(id: string) {
 
 // ─── Quotes ─────────────────────────────────────────────────
 
+function mapSections(sections: QuoteFormData['sections']) {
+  return sections.map((section, sIdx) => ({
+    title: section.title,
+    type: section.type,
+    order: sIdx,
+    items: {
+      create: section.items.map((item, iIdx) => ({
+        dishId: item.dishId,
+        name: item.name,
+        description: item.description,
+        weight: item.weight,
+        weightUnit: item.weightUnit,
+        quantity: item.quantity,
+        pricePerUnit: item.pricePerUnit,
+        image: item.image,
+        order: iIdx,
+      })),
+    },
+  }))
+}
+
+function mapServices(services: QuoteFormData['services']) {
+  return services.map((svc, idx) => ({
+    serviceTemplateId: svc.serviceTemplateId,
+    name: svc.name,
+    price: svc.price,
+    quantity: svc.quantity,
+    isPerPerson: svc.isPerPerson,
+    order: idx,
+  }))
+}
+
 export async function saveQuote(data: QuoteFormData, id?: string) {
   await requireSession()
   const parsed = quoteSchema.parse(data)
@@ -136,87 +168,26 @@ export async function saveQuote(data: QuoteFormData, id?: string) {
     slug: parsed.slug,
   }
 
-  let quote
-
-  if (id) {
-    // Update: delete old sections/services and recreate
-    await prisma.quoteSection.deleteMany({ where: { quoteId: id } })
-    await prisma.quoteService.deleteMany({ where: { quoteId: id } })
-
-    quote = await prisma.quote.update({
-      where: { id },
-      data: {
-        ...quoteData,
-        sections: {
-          create: parsed.sections.map((section, sIdx) => ({
-            title: section.title,
-            type: section.type,
-            order: sIdx,
-            items: {
-              create: section.items.map((item, iIdx) => ({
-                dishId: item.dishId,
-                name: item.name,
-                description: item.description,
-                weight: item.weight,
-                weightUnit: item.weightUnit,
-                quantity: item.quantity,
-                pricePerUnit: item.pricePerUnit,
-                image: item.image,
-                order: iIdx,
-              })),
-            },
-          })),
+  const quote = id
+    ? await prisma.$transaction(async (tx) => {
+        await tx.quoteSection.deleteMany({ where: { quoteId: id } })
+        await tx.quoteService.deleteMany({ where: { quoteId: id } })
+        return tx.quote.update({
+          where: { id },
+          data: {
+            ...quoteData,
+            sections: { create: mapSections(parsed.sections) },
+            services: { create: mapServices(parsed.services) },
+          },
+        })
+      })
+    : await prisma.quote.create({
+        data: {
+          ...quoteData,
+          sections: { create: mapSections(parsed.sections) },
+          services: { create: mapServices(parsed.services) },
         },
-        services: {
-          create: parsed.services.map((svc, idx) => ({
-            serviceTemplateId: svc.serviceTemplateId,
-            name: svc.name,
-            price: svc.price,
-            quantity: svc.quantity,
-            isPerPerson: svc.isPerPerson,
-            order: idx,
-          })),
-        },
-      },
-    })
-  } else {
-    // Create new
-    quote = await prisma.quote.create({
-      data: {
-        ...quoteData,
-        sections: {
-          create: parsed.sections.map((section, sIdx) => ({
-            title: section.title,
-            type: section.type,
-            order: sIdx,
-            items: {
-              create: section.items.map((item, iIdx) => ({
-                dishId: item.dishId,
-                name: item.name,
-                description: item.description,
-                weight: item.weight,
-                weightUnit: item.weightUnit,
-                quantity: item.quantity,
-                pricePerUnit: item.pricePerUnit,
-                image: item.image,
-                order: iIdx,
-              })),
-            },
-          })),
-        },
-        services: {
-          create: parsed.services.map((svc, idx) => ({
-            serviceTemplateId: svc.serviceTemplateId,
-            name: svc.name,
-            price: svc.price,
-            quantity: svc.quantity,
-            isPerPerson: svc.isPerPerson,
-            order: idx,
-          })),
-        },
-      },
-    })
-  }
+      })
 
   revalidatePath(`/quote/${quote.slug}`)
   revalidatePath('/admin')

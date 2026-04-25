@@ -1,4 +1,5 @@
 import { cache } from 'react'
+import { Prisma } from '@prisma/client'
 import { prisma } from './prisma'
 import { formatDateRu } from './utils'
 import type { MenuData, MenuCategory, MenuItem, ServiceItem, ManagerInfo } from '@/types'
@@ -9,9 +10,12 @@ export async function getSiteSetting(key: string): Promise<string | null> {
   try {
     const setting = await prisma.siteSetting.findUnique({ where: { key } })
     return setting?.value ?? null
-  } catch {
-    // Table may not exist yet in production — fall back gracefully
-    return null
+  } catch (err) {
+    // P2021: table does not exist (first deploy before migrations run).
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2021') {
+      return null
+    }
+    throw err
   }
 }
 

@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { INPUT_FOCUS_RING } from '@/lib/ui-classes'
 
 interface ImageUploadProps {
   value: string
@@ -61,7 +62,7 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="URL изображения"
-        className="block w-full rounded-lg border border-neutral-200 px-3 py-1.5 text-xs shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+        className={`block w-full rounded-lg border border-neutral-200 px-3 py-1.5 text-xs shadow-sm ${INPUT_FOCUS_RING}`}
       />
     </div>
   )

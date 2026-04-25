@@ -1,8 +1,6 @@
 import ContactCta from "./landing/ContactCta";
 import SiteFooter from "./landing/SiteFooter";
-import { formatPhone, phoneTelHref } from "@/lib/phone";
-
-const DEFAULT_PHONE = "+7(964)7611900";
+import { formatPhone, phoneTelHref, DEFAULT_PHONE_RAW } from "@/lib/phone";
 
 export default function Footer({
   phone: phoneProp,
@@ -11,7 +9,7 @@ export default function Footer({
   phone?: string;
   ctaClassName?: string;
 }) {
-  const raw = phoneProp || DEFAULT_PHONE;
+  const raw = phoneProp || DEFAULT_PHONE_RAW;
   const phone = formatPhone(raw);
   const phoneHref = phoneTelHref(raw);
 

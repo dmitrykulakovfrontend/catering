@@ -2,12 +2,13 @@
 
 import { useState, useTransition } from 'react'
 import { updateSiteSettings } from '@/lib/actions'
+import { DEFAULT_PHONE_RAW } from '@/lib/phone'
 
 const SETTINGS_FIELDS = [
   {
     key: 'phone',
     label: 'Телефон (главная страница)',
-    placeholder: '7(964)7611900',
+    placeholder: DEFAULT_PHONE_RAW,
     description: 'Номер телефона, который отображается на главной странице сайта',
   },
 ]

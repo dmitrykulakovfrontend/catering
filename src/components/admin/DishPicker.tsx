@@ -6,27 +6,13 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { createCategory, createDish } from '@/lib/actions'
 import ImageUpload from './ImageUpload'
-
-interface Dish {
-  id: string
-  name: string
-  description: string
-  weight: number
-  weightUnit: string
-  defaultPrice: number
-  image: string
-  categoryId: string
-}
-
-interface Category {
-  id: string
-  name: string
-  dishes: Dish[]
-}
+import Modal from './ui/Modal'
+import type { DishRow, DishCategoryWithDishes } from '@/types/admin'
+import { PANEL_INPUT } from '@/lib/ui-classes'
 
 interface DishPickerProps {
-  categories: Category[]
-  onSelect: (dish: Dish) => void
+  categories: DishCategoryWithDishes[]
+  onSelect: (dish: DishRow) => void
   onClose: () => void
 }
 
@@ -41,7 +27,7 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
   const [createMode, setCreateMode] = useState<CreateMode>(null)
   const [saving, setSaving] = useState(false)
   const [flashId, setFlashId] = useState<string | null>(null)
-  const [localCats, setLocalCats] = useState<Category[]>(categories)
+  const [localCats, setLocalCats] = useState<DishCategoryWithDishes[]>(categories)
 
   const [catDraft, setCatDraft] = useState('')
   const [dishDraft, setDishDraft] = useState({
@@ -58,20 +44,12 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
   const catInputRef = useRef<HTMLInputElement>(null)
   const dishNameRef = useRef<HTMLInputElement>(null)
 
+  // Mirror props into local state so we can optimistically insert new
+  // categories/dishes before the server revalidates. When the server data
+  // arrives, its ids are a superset of ours — safe to replace.
   useEffect(() => {
     setLocalCats(categories)
   }, [categories])
-
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        if (createMode) setCreateMode(null)
-        else onClose()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [createMode, onClose])
 
   useEffect(() => {
     if (createMode === 'category') catInputRef.current?.focus()
@@ -107,7 +85,7 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
     setSaving(true)
     try {
       const newCat = await createCategory({ name, order: localCats.length })
-      const merged: Category = { id: newCat.id, name: newCat.name, dishes: [] }
+      const merged: DishCategoryWithDishes = { ...newCat, dishes: [] }
       setLocalCats((cs) => [...cs, merged])
       setCatDraft('')
       setCreateMode(null)
@@ -137,22 +115,12 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
     setSaving(true)
     try {
       const created = await createDish(dishDraft)
-      const merged: Dish = {
-        id: created.id,
-        name: created.name,
-        description: created.description,
-        weight: created.weight,
-        weightUnit: created.weightUnit,
-        defaultPrice: created.defaultPrice,
-        image: created.image,
-        categoryId: created.categoryId,
-      }
       setLocalCats((cs) =>
-        cs.map((c) => (c.id === merged.categoryId ? { ...c, dishes: [...c.dishes, merged] } : c)),
+        cs.map((c) => (c.id === created.categoryId ? { ...c, dishes: [...c.dishes, created] } : c)),
       )
       toast.success('Блюдо добавлено в каталог')
       router.refresh()
-      onSelect(merged)
+      onSelect(created)
       onClose()
     } catch {
       toast.error('Ошибка создания блюда')
@@ -161,17 +129,21 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
     }
   }
 
-  const panelInput =
-    'w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm shadow-sm transition focus:border-royal-500 focus:ring-2 focus:ring-royal-500/15 focus:outline-none'
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="fixed inset-0 bg-neutral-950/50 backdrop-blur-sm"
-        onClick={() => (createMode ? setCreateMode(null) : onClose())}
-      />
-
-      <div className="relative z-10 flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-[0_30px_80px_-20px_rgba(15,31,102,0.35)] ring-1 ring-neutral-200/60">
+    <Modal
+      open
+      onClose={onClose}
+      backdropClassName="fixed inset-0 bg-neutral-950/50 backdrop-blur-sm"
+      panelClassName="relative z-10 flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-[0_30px_80px_-20px_rgba(15,31,102,0.35)] ring-1 ring-neutral-200/60"
+      onEscape={() => {
+        if (createMode) { setCreateMode(null); return true }
+        return false
+      }}
+      onBackdropClick={() => {
+        if (createMode) { setCreateMode(null); return true }
+        return false
+      }}
+    >
         {/* Header */}
         <div className="relative border-b border-neutral-100 bg-linear-to-b from-cream to-white px-6 pt-5 pb-4">
           <div className="flex items-start justify-between gap-4">
@@ -214,7 +186,7 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Поиск по названию..."
-                className={`${panelInput} pl-9`}
+                className={`${PANEL_INPUT} pl-9`}
               />
             </div>
             <button
@@ -270,7 +242,7 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
                 value={catDraft}
                 onChange={(e) => setCatDraft(e.target.value)}
                 placeholder="Например, Холодные закуски"
-                className={panelInput}
+                className={PANEL_INPUT}
               />
               <button
                 type="button"
@@ -318,7 +290,7 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
                   value={dishDraft.name}
                   onChange={(e) => setDishDraft({ ...dishDraft, name: e.target.value })}
                   placeholder="Название"
-                  className={panelInput}
+                  className={PANEL_INPUT}
                 />
               </div>
               <div className="col-span-6">
@@ -327,7 +299,7 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
                   onChange={(e) => setDishDraft({ ...dishDraft, description: e.target.value })}
                   placeholder="Описание (необязательно)"
                   rows={2}
-                  className={`${panelInput} resize-none`}
+                  className={`${PANEL_INPUT} resize-none`}
                 />
               </div>
               <div className="col-span-2">
@@ -339,14 +311,14 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
                   value={dishDraft.weight || ''}
                   onChange={(e) => setDishDraft({ ...dishDraft, weight: parseFloat(e.target.value) || 0 })}
                   placeholder="Вес"
-                  className={panelInput}
+                  className={PANEL_INPUT}
                 />
               </div>
               <div className="col-span-1">
                 <select
                   value={dishDraft.weightUnit}
                   onChange={(e) => setDishDraft({ ...dishDraft, weightUnit: e.target.value })}
-                  className={panelInput}
+                  className={PANEL_INPUT}
                 >
                   {WEIGHT_UNITS.map((u) => (
                     <option key={u} value={u}>{u}</option>
@@ -363,7 +335,7 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
                     value={dishDraft.defaultPrice || ''}
                     onChange={(e) => setDishDraft({ ...dishDraft, defaultPrice: parseFloat(e.target.value) || 0 })}
                     placeholder="Цена"
-                    className={`${panelInput} pr-7`}
+                    className={`${PANEL_INPUT} pr-7`}
                   />
                   <span className="absolute top-1/2 right-3 -translate-y-1/2 text-xs text-neutral-400">₽</span>
                 </div>
@@ -373,7 +345,7 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
                   required
                   value={dishDraft.categoryId}
                   onChange={(e) => setDishDraft({ ...dishDraft, categoryId: e.target.value })}
-                  className={panelInput}
+                  className={PANEL_INPUT}
                 >
                   <option value="" disabled>Категория</option>
                   {localCats.map((c) => (
@@ -480,7 +452,6 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
             Закрыть
           </button>
         </div>
-      </div>
 
       <style jsx>{`
         .animate-in {
@@ -497,7 +468,7 @@ export default function DishPicker({ categories, onSelect, onClose }: DishPicker
           }
         }
       `}</style>
-    </div>
+    </Modal>
   )
 }
 

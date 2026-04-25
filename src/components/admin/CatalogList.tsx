@@ -6,29 +6,13 @@ import { toast } from 'sonner'
 import { deleteCategory, deleteDish, reorderCategories } from '@/lib/actions'
 import DishForm from './DishForm'
 import DeleteConfirmDialog from './DeleteConfirmDialog'
-
-interface Dish {
-  id: string
-  name: string
-  description: string
-  weight: number
-  weightUnit: string
-  defaultPrice: number
-  image: string
-  categoryId: string
-}
-
-interface Category {
-  id: string
-  name: string
-  order: number
-  dishes: Dish[]
-}
+import type { DishRow, DishCategoryWithDishes } from '@/types/admin'
+import { INPUT_FOCUS_RING } from '@/lib/ui-classes'
 
 const STORAGE_KEY = 'admin:catalog:collapsed'
 
-export default function CatalogList({ categories }: { categories: Category[] }) {
-  const [editingDish, setEditingDish] = useState<Dish | null>(null)
+export default function CatalogList({ categories }: { categories: DishCategoryWithDishes[] }) {
+  const [editingDish, setEditingDish] = useState<DishRow | null>(null)
   const [addingToCategoryId, setAddingToCategoryId] = useState<string | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<{ type: 'dish' | 'category'; id: string; name: string } | null>(null)
   const [search, setSearch] = useState('')
@@ -142,7 +126,7 @@ export default function CatalogList({ categories }: { categories: Category[] }) 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Поиск по блюдам…  (нажмите / чтобы сфокусировать)"
-              className="w-full rounded-lg border border-neutral-200 bg-white pl-9 pr-9 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+              className={`w-full rounded-lg border border-neutral-200 bg-white pl-9 pr-9 py-2 text-sm shadow-sm ${INPUT_FOCUS_RING}`}
             />
             {search && (
               <button

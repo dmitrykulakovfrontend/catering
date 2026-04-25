@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { DEFAULT_PHONE_RAW } from '../src/lib/phone'
 
 const adapter = new PrismaLibSql({
   url: process.env.TURSO_DATABASE_URL || 'file:./prisma/dev.db',
@@ -24,7 +25,7 @@ async function main() {
   // ─── Phase 0: Site Settings ────────────────────────────────
 
   await prisma.siteSetting.create({
-    data: { key: 'phone', value: '7(964)7611900' },
+    data: { key: 'phone', value: DEFAULT_PHONE_RAW },
   })
   console.log('Site settings seeded.')
 

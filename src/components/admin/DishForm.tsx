@@ -4,26 +4,15 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { createDish, updateDish } from '@/lib/actions'
 import ImageUpload from './ImageUpload'
+import Modal from './ui/Modal'
+import type { DishRow } from '@/types/admin'
+import { INPUT_BASE } from '@/lib/ui-classes'
 
-interface Category {
-  id: string
-  name: string
-}
-
-interface DishData {
-  id?: string
-  name: string
-  description: string
-  weight: number
-  weightUnit: string
-  defaultPrice: number
-  image: string
-  categoryId: string
-}
+type DishDraft = Partial<DishRow> & { categoryId: string }
 
 interface DishFormProps {
-  dish?: DishData
-  categories: Category[]
+  dish?: DishDraft
+  categories: { id: string; name: string }[]
   onClose: () => void
 }
 
@@ -59,12 +48,14 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-        <h3 className="text-lg font-semibold text-neutral-900 mb-5">
-          {dish?.id ? 'Редактировать блюдо' : 'Новое блюдо'}
-        </h3>
+    <Modal
+      open
+      onClose={onClose}
+      panelClassName="relative z-10 w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+    >
+      <h3 className="text-lg font-semibold text-neutral-900 mb-5">
+        {dish?.id ? 'Редактировать блюдо' : 'Новое блюдо'}
+      </h3>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -74,7 +65,7 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="mt-1 block w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+              className={INPUT_BASE}
             />
           </div>
 
@@ -84,7 +75,7 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={2}
-              className="mt-1 block w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+              className={INPUT_BASE}
             />
           </div>
 
@@ -98,7 +89,7 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
                 step="any"
                 value={form.weight}
                 onChange={(e) => setForm({ ...form, weight: parseFloat(e.target.value) || 0 })}
-                className="mt-1 block w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+                className={INPUT_BASE}
               />
             </div>
             <div>
@@ -106,7 +97,7 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
               <select
                 value={form.weightUnit}
                 onChange={(e) => setForm({ ...form, weightUnit: e.target.value })}
-                className="mt-1 block w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+                className={INPUT_BASE}
               >
                 <option value="г">г</option>
                 <option value="мл">мл</option>
@@ -123,7 +114,7 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
                 step="any"
                 value={form.defaultPrice}
                 onChange={(e) => setForm({ ...form, defaultPrice: parseFloat(e.target.value) || 0 })}
-                className="mt-1 block w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+                className={INPUT_BASE}
               />
             </div>
           </div>
@@ -134,7 +125,7 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
               required
               value={form.categoryId}
               onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-              className="mt-1 block w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:border-royal-500 focus:ring-1 focus:ring-royal-500/20 focus:outline-none"
+              className={INPUT_BASE}
             >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
@@ -166,7 +157,6 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </Modal>
   )
 }
