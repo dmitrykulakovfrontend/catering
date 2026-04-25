@@ -16,7 +16,7 @@ export default function YesButContrast({
     >
       <div className="lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-stretch">
         {/* ─────────────────────────  Panel I — ДА  ───────────────────────── */}
-        <article className="relative isolate min-h-[40svh] lg:min-h-[68vh] flex items-center overflow-hidden">
+        <article className="relative isolate min-h-[50svh] lg:min-h-[68vh] flex items-center overflow-hidden">
           <Image
             src={imageBefore}
             alt=""
@@ -60,7 +60,7 @@ export default function YesButContrast({
         </div>
 
         {/* ─────────────────────────  Panel II — НО  ───────────────────────── */}
-        <article className="relative isolate min-h-[40svh] lg:min-h-[68vh] flex items-center overflow-hidden">
+        <article className="relative isolate min-h-[50svh] lg:min-h-[68vh] flex items-center overflow-hidden">
           <Image
             src={imageAfter}
             alt=""
