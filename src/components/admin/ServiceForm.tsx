@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { createServiceTemplate, updateServiceTemplate } from '@/lib/actions'
+import { serviceTemplateSchema } from '@/lib/validations'
 import type { ServiceTemplateRow } from '@/types/admin'
-import { INPUT_BASE } from '@/lib/ui-classes'
+import { INPUT_BASE, INPUT_BASE_ERROR } from '@/lib/ui-classes'
 import Modal from './ui/Modal'
 
 interface ServiceFormProps {
@@ -19,17 +20,42 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
     isPerPerson: service?.isPerPerson || false,
     order: service?.order || 0,
   })
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
+
+  function patch<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
+    setForm((f) => ({ ...f, [key]: value }))
+    setErrors((prev) => {
+      if (!(key in prev)) return prev
+      const next = { ...prev }
+      delete next[key as string]
+      return next
+    })
+  }
+
+  const cls = (key: string) => (errors[key] ? INPUT_BASE_ERROR : INPUT_BASE)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    const result = serviceTemplateSchema.safeParse(form)
+    if (!result.success) {
+      const next: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        const key = issue.path.join('.')
+        if (!(key in next)) next[key] = issue.message
+      }
+      setErrors(next)
+      toast.error(result.error.issues[0].message)
+      return
+    }
+    setErrors({})
     setSaving(true)
     try {
       if (service?.id) {
-        await updateServiceTemplate(service.id, form)
+        await updateServiceTemplate(service.id, result.data)
         toast.success('Услуга обновлена')
       } else {
-        await createServiceTemplate(form)
+        await createServiceTemplate(result.data)
         toast.success('Услуга добавлена')
       }
       onClose()
@@ -51,24 +77,24 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
             <label className="block text-sm font-medium text-neutral-700">Название</label>
             <input
               type="text"
-              required
               value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className={INPUT_BASE}
+              onChange={(e) => patch('name', e.target.value)}
+              className={cls('name')}
             />
+            {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-neutral-700">Цена по умолчанию</label>
             <input
               type="number"
-              required
               min={0}
               step="any"
               value={form.defaultPrice}
-              onChange={(e) => setForm({ ...form, defaultPrice: parseFloat(e.target.value) || 0 })}
-              className={INPUT_BASE}
+              onChange={(e) => patch('defaultPrice', parseFloat(e.target.value) || 0)}
+              className={cls('defaultPrice')}
             />
+            {errors.defaultPrice && <p className="mt-1 text-xs text-red-600">{errors.defaultPrice}</p>}
           </div>
 
           <div className="flex items-center gap-2">
@@ -76,7 +102,7 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
               type="checkbox"
               id="isPerPerson"
               checked={form.isPerPerson}
-              onChange={(e) => setForm({ ...form, isPerPerson: e.target.checked })}
+              onChange={(e) => patch('isPerPerson', e.target.checked)}
               className="h-4 w-4 rounded border-neutral-200 text-royal-500 focus:ring-royal-500"
             />
             <label htmlFor="isPerPerson" className="text-sm text-neutral-700">

@@ -1,6 +1,6 @@
 'use client'
 
-import { INLINE_INPUT, SMALL_INPUT } from '@/lib/ui-classes'
+import { INLINE_INPUT, INLINE_INPUT_ERROR, SMALL_INPUT, SMALL_INPUT_ERROR } from '@/lib/ui-classes'
 import type { QuoteServiceDraft } from '@/types/admin'
 
 interface ServicesBlockProps {
@@ -8,6 +8,7 @@ interface ServicesBlockProps {
   persons: number
   servicesSubtotal: number
   collapsed: boolean
+  errors: Record<string, string>
   onToggleCollapsed: () => void
   onUpdate: (idx: number, field: string, value: string | number | boolean) => void
   onRemove: (idx: number) => void
@@ -19,6 +20,7 @@ export default function ServicesBlock({
   persons,
   servicesSubtotal,
   collapsed,
+  errors,
   onToggleCollapsed,
   onUpdate,
   onRemove,
@@ -47,7 +49,7 @@ export default function ServicesBlock({
             onClick={onOpenPicker}
             className="rounded-md bg-royal-500 px-3 py-1 text-xs font-medium text-white hover:bg-royal-600"
           >
-            + Услугу
+            Добавить услугу
           </button>
         </div>
       </div>
@@ -58,52 +60,60 @@ export default function ServicesBlock({
         </div>
       ) : (
         <div className="divide-y divide-neutral-50">
-          {services.map((svc, idx) => (
-            <div key={idx} className="flex items-center gap-3 px-5 py-3">
-              <input
-                type="text"
-                value={svc.name}
-                onChange={(e) => onUpdate(idx, 'name', e.target.value)}
-                className={INLINE_INPUT}
-              />
-              <div className="flex items-center gap-2">
+          {services.map((svc, idx) => {
+            const nameErr = errors[`services.${idx}.name`]
+            const qtyErr = errors[`services.${idx}.quantity`]
+            const priceErr = errors[`services.${idx}.price`]
+            return (
+              <div key={idx} className="flex items-center gap-3 px-5 py-3">
                 <input
-                  type="number"
-                  min={1}
-                  value={svc.quantity}
-                  onChange={(e) => onUpdate(idx, 'quantity', parseInt(e.target.value) || 1)}
-                  className={`w-14 ${SMALL_INPUT}`}
+                  type="text"
+                  value={svc.name}
+                  onChange={(e) => onUpdate(idx, 'name', e.target.value)}
+                  className={nameErr ? INLINE_INPUT_ERROR : INLINE_INPUT}
+                  title={nameErr}
                 />
-                <span className="text-xs text-neutral-400">×</span>
-                <input
-                  type="number"
-                  min={0}
-                  step="any"
-                  value={svc.price}
-                  onChange={(e) => onUpdate(idx, 'price', parseFloat(e.target.value) || 0)}
-                  className={`w-24 text-right ${SMALL_INPUT}`}
-                />
-                <label className="flex items-center gap-1 text-xs text-neutral-500">
+                <div className="flex items-center gap-2">
                   <input
-                    type="checkbox"
-                    checked={svc.isPerPerson}
-                    onChange={(e) => onUpdate(idx, 'isPerPerson', e.target.checked)}
-                    className="h-3 w-3 rounded border-neutral-200"
+                    type="number"
+                    min={1}
+                    value={svc.quantity}
+                    onChange={(e) => onUpdate(idx, 'quantity', parseInt(e.target.value) || 1)}
+                    className={`w-14 ${qtyErr ? SMALL_INPUT_ERROR : SMALL_INPUT}`}
+                    title={qtyErr}
                   />
-                  /чел
-                </label>
-                <span className="w-24 text-right text-xs font-medium text-neutral-700">
-                  {(svc.isPerPerson ? svc.price * persons : svc.price * svc.quantity).toLocaleString('ru-RU')} ₽
-                </span>
+                  <span className="text-xs text-neutral-400">×</span>
+                  <input
+                    type="number"
+                    min={0}
+                    step="any"
+                    value={svc.price}
+                    onChange={(e) => onUpdate(idx, 'price', parseFloat(e.target.value) || 0)}
+                    className={`w-24 text-right ${priceErr ? SMALL_INPUT_ERROR : SMALL_INPUT}`}
+                    title={priceErr}
+                  />
+                  <label className="flex items-center gap-1 text-xs text-neutral-500">
+                    <input
+                      type="checkbox"
+                      checked={svc.isPerPerson}
+                      onChange={(e) => onUpdate(idx, 'isPerPerson', e.target.checked)}
+                      className="h-3 w-3 rounded border-neutral-200"
+                    />
+                    /чел
+                  </label>
+                  <span className="w-24 text-right text-xs font-medium text-neutral-700">
+                    {(svc.isPerPerson ? svc.price * persons : svc.price * svc.quantity).toLocaleString('ru-RU')} ₽
+                  </span>
+                </div>
+                <button
+                  onClick={() => onRemove(idx)}
+                  className="rounded p-1 text-xs text-red-400 hover:bg-red-50 hover:text-red-600"
+                >
+                  ✕
+                </button>
               </div>
-              <button
-                onClick={() => onRemove(idx)}
-                className="rounded p-1 text-xs text-red-400 hover:bg-red-50 hover:text-red-600"
-              >
-                ✕
-              </button>
-            </div>
-          ))}
+            )
+          })}
         </div>
       ))}
     </div>

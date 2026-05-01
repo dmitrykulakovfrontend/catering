@@ -1,4 +1,8 @@
 import { z } from 'zod'
+import { ru } from 'zod/locales'
+
+// Russian default messages for any zod issue we don't override per-field.
+z.config(ru())
 
 export const categorySchema = z.object({
   name: z.string().min(1, 'Название обязательно'),
@@ -24,19 +28,19 @@ export const serviceTemplateSchema = z.object({
 
 export const quoteItemSchema = z.object({
   dishId: z.string().nullable().default(null),
-  name: z.string().min(1),
+  name: z.string().min(1, 'Укажите название блюда'),
   description: z.string().default(''),
   weight: z.number(),
   weightUnit: z.string().default('г'),
-  quantity: z.number().int().positive(),
-  pricePerUnit: z.number().nonnegative(),
+  quantity: z.number().int().positive('Количество должно быть положительным'),
+  pricePerUnit: z.number().nonnegative('Цена не может быть отрицательной'),
   image: z.string().default(''),
   order: z.number().int().default(0),
 })
 
 export const quoteSectionSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1),
+  title: z.string().min(1, 'Укажите название раздела'),
   type: z.enum(['banquet', 'welcome']).default('banquet'),
   order: z.number().int().default(0),
   items: z.array(quoteItemSchema),
@@ -44,9 +48,9 @@ export const quoteSectionSchema = z.object({
 
 export const quoteServiceSchema = z.object({
   serviceTemplateId: z.string().nullable().default(null),
-  name: z.string().min(1),
-  price: z.number().nonnegative(),
-  quantity: z.number().int().positive().default(1),
+  name: z.string().min(1, 'Укажите название услуги'),
+  price: z.number().nonnegative('Цена не может быть отрицательной'),
+  quantity: z.number().int().positive('Количество должно быть положительным').default(1),
   isPerPerson: z.boolean().default(false),
   order: z.number().int().default(0),
 })
@@ -59,7 +63,8 @@ export const quoteSchema = z.object({
   managerPhone: z.string().default(''),
   notes: z.string().default(''),
   validUntil: z.string().nullable().default(null),
-  slug: z.string().min(1),
+  // Auto-generated client-side from eventTitle + managerName when empty.
+  slug: z.string().min(1, 'Не удалось сгенерировать ссылку'),
   sections: z.array(quoteSectionSchema),
   services: z.array(quoteServiceSchema),
 })

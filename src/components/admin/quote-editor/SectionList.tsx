@@ -10,6 +10,7 @@ interface SectionListProps {
   sectionWeights: Record<string, number>[]
   collapsedIdx: number[]
   allCollapsed: boolean
+  errors: Record<string, string>
   onToggleSection: (idx: number) => void
   onCollapseAll: () => void
   onExpandAll: () => void
@@ -30,6 +31,7 @@ export default function SectionList({
   sectionWeights,
   collapsedIdx,
   allCollapsed,
+  errors,
   onToggleSection,
   onCollapseAll,
   onExpandAll,
@@ -62,13 +64,13 @@ export default function SectionList({
             onClick={() => onAddSection('banquet')}
             className="rounded-lg border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-50"
           >
-            + Раздел банкета
+            Добавить раздел банкета
           </button>
           <button
             onClick={() => onAddSection('welcome')}
             className="rounded-lg border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-50"
           >
-            + Welcome зона
+            Добавить раздел Welcome
           </button>
         </div>
       </div>
@@ -90,6 +92,7 @@ export default function SectionList({
           subtotal={sectionSubtotals[sIdx]}
           weights={sectionWeights[sIdx]}
           persons={persons}
+          errors={errors}
           onToggleCollapsed={() => onToggleSection(sIdx)}
           onUpdateTitle={(t) => onUpdateTitle(sIdx, t)}
           onRemove={() => onRemoveSection(sIdx)}

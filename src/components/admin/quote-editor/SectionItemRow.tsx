@@ -1,13 +1,19 @@
 'use client'
 
 import Image from 'next/image'
-import { INLINE_INPUT, SMALL_INPUT } from '@/lib/ui-classes'
+import { INLINE_INPUT, INLINE_INPUT_ERROR, SMALL_INPUT, SMALL_INPUT_ERROR } from '@/lib/ui-classes'
 import type { QuoteItemDraft } from '@/types/admin'
 
 interface SectionItemRowProps {
   item: QuoteItemDraft
   isFirst: boolean
   isLast: boolean
+  errors: {
+    name?: string
+    quantity?: string
+    pricePerUnit?: string
+    weight?: string
+  }
   onUpdate: (field: string, value: string | number) => void
   onRemove: () => void
   onMove: (dir: -1 | 1) => void
@@ -17,6 +23,7 @@ export default function SectionItemRow({
   item,
   isFirst,
   isLast,
+  errors,
   onUpdate,
   onRemove,
   onMove,
@@ -38,12 +45,17 @@ export default function SectionItemRow({
         type="text"
         value={item.name}
         onChange={(e) => onUpdate('name', e.target.value)}
-        className={INLINE_INPUT}
+        className={errors.name ? INLINE_INPUT_ERROR : INLINE_INPUT}
+        title={errors.name}
       />
       <div className="flex items-center gap-1">
         <div
-          className="flex items-center overflow-hidden rounded-md border border-neutral-200 bg-white transition focus-within:border-royal-500 focus-within:ring-1 focus-within:ring-royal-500/20 hover:border-neutral-300"
-          title="Вес за порцию"
+          className={
+            errors.weight
+              ? 'flex items-center overflow-hidden rounded-md border border-red-400 bg-red-50/40 transition focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500/30'
+              : 'flex items-center overflow-hidden rounded-md border border-neutral-200 bg-white transition focus-within:border-royal-500 focus-within:ring-1 focus-within:ring-royal-500/20 hover:border-neutral-300'
+          }
+          title={errors.weight || 'Вес за порцию'}
         >
           <input
             type="number"
@@ -69,8 +81,8 @@ export default function SectionItemRow({
           min={1}
           value={item.quantity}
           onChange={(e) => onUpdate('quantity', parseInt(e.target.value) || 1)}
-          className={`w-14 ${SMALL_INPUT}`}
-          title="Кол-во"
+          className={`w-14 ${errors.quantity ? SMALL_INPUT_ERROR : SMALL_INPUT}`}
+          title={errors.quantity || 'Кол-во'}
         />
         <span className="text-xs text-neutral-400">×</span>
         <input
@@ -79,8 +91,8 @@ export default function SectionItemRow({
           step="any"
           value={item.pricePerUnit}
           onChange={(e) => onUpdate('pricePerUnit', parseFloat(e.target.value) || 0)}
-          className={`w-20 text-right ${SMALL_INPUT}`}
-          title="Цена за ед."
+          className={`w-20 text-right ${errors.pricePerUnit ? SMALL_INPUT_ERROR : SMALL_INPUT}`}
+          title={errors.pricePerUnit || 'Цена за ед.'}
         />
         <span className="w-20 text-right text-xs font-medium text-neutral-700">
           {(item.quantity * item.pricePerUnit).toLocaleString('ru-RU')} ₽

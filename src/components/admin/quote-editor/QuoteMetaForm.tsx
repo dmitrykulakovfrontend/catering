@@ -1,6 +1,6 @@
 'use client'
 
-import { INPUT_BASE } from '@/lib/ui-classes'
+import { INPUT_BASE, INPUT_BASE_ERROR } from '@/lib/ui-classes'
 
 export interface QuoteMetaFormValue {
   eventTitle: string
@@ -19,6 +19,7 @@ interface QuoteMetaFormProps {
   collapsed: boolean
   onToggleCollapsed: () => void
   onSlugBlur: () => void
+  errors: Record<string, string>
 }
 
 export default function QuoteMetaForm({
@@ -27,10 +28,12 @@ export default function QuoteMetaForm({
   collapsed,
   onToggleCollapsed,
   onSlugBlur,
+  errors,
 }: QuoteMetaFormProps) {
   function patch(part: Partial<QuoteMetaFormValue>) {
     onChange({ ...value, ...part })
   }
+  const cls = (key: string) => (errors[key] ? INPUT_BASE_ERROR : INPUT_BASE)
 
   return (
     <div className="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
@@ -61,8 +64,9 @@ export default function QuoteMetaForm({
               onChange={(e) => patch({ eventTitle: e.target.value })}
               onBlur={onSlugBlur}
               placeholder="Банкет на 30 персон"
-              className={INPUT_BASE}
+              className={cls('eventTitle')}
             />
+            {errors.eventTitle && <p className="mt-1 text-xs text-red-600">{errors.eventTitle}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-neutral-700">Время</label>
@@ -71,8 +75,9 @@ export default function QuoteMetaForm({
               value={value.eventTime}
               onChange={(e) => patch({ eventTime: e.target.value })}
               placeholder="c 11:00 до 22:30"
-              className={INPUT_BASE}
+              className={cls('eventTime')}
             />
+            {errors.eventTime && <p className="mt-1 text-xs text-red-600">{errors.eventTime}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-neutral-700">Количество персон</label>
@@ -81,8 +86,9 @@ export default function QuoteMetaForm({
               min={1}
               value={value.persons}
               onChange={(e) => patch({ persons: parseInt(e.target.value) || 1 })}
-              className={INPUT_BASE}
+              className={cls('persons')}
             />
+            {errors.persons && <p className="mt-1 text-xs text-red-600">{errors.persons}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-neutral-700">Имя менеджера</label>
@@ -92,8 +98,9 @@ export default function QuoteMetaForm({
               value={value.managerName}
               onChange={(e) => patch({ managerName: e.target.value })}
               onBlur={onSlugBlur}
-              className={INPUT_BASE}
+              className={cls('managerName')}
             />
+            {errors.managerName && <p className="mt-1 text-xs text-red-600">{errors.managerName}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-neutral-700">Телефон менеджера</label>
@@ -102,7 +109,7 @@ export default function QuoteMetaForm({
               value={value.managerPhone}
               onChange={(e) => patch({ managerPhone: e.target.value })}
               placeholder="+7..."
-              className={INPUT_BASE}
+              className={cls('managerPhone')}
             />
           </div>
           <div>
@@ -111,18 +118,22 @@ export default function QuoteMetaForm({
               type="date"
               value={value.validUntil || ''}
               onChange={(e) => patch({ validUntil: e.target.value || null })}
-              className={INPUT_BASE}
+              className={cls('validUntil')}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-neutral-700">Ссылка (URL)</label>
+            <label className="block text-sm font-medium text-neutral-700">
+              Ссылка (URL)
+              <span className="ml-1 text-xs font-normal text-neutral-400">— заполнится автоматически</span>
+            </label>
             <input
               type="text"
-              required
               value={value.slug}
               onChange={(e) => patch({ slug: e.target.value })}
-              className={`${INPUT_BASE} font-mono`}
+              placeholder="оставьте пустым для авто-генерации"
+              className={`${cls('slug')} font-mono`}
             />
+            {errors.slug && <p className="mt-1 text-xs text-red-600">{errors.slug}</p>}
           </div>
           <div className="col-span-2">
             <label className="block text-sm font-medium text-neutral-700">Заметки</label>
@@ -130,7 +141,7 @@ export default function QuoteMetaForm({
               value={value.notes}
               onChange={(e) => patch({ notes: e.target.value })}
               rows={2}
-              className={INPUT_BASE}
+              className={cls('notes')}
             />
           </div>
         </div>

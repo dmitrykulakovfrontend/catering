@@ -3,10 +3,11 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { createDish, updateDish } from '@/lib/actions'
+import { dishSchema } from '@/lib/validations'
 import ImageUpload from './ImageUpload'
 import Modal from './ui/Modal'
 import type { DishRow } from '@/types/admin'
-import { INPUT_BASE } from '@/lib/ui-classes'
+import { INPUT_BASE, INPUT_BASE_ERROR } from '@/lib/ui-classes'
 
 type DishDraft = Partial<DishRow> & { categoryId: string }
 
@@ -26,17 +27,42 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
     image: dish?.image || '',
     categoryId: dish?.categoryId || categories[0]?.id || '',
   })
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
+
+  function patch<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
+    setForm((f) => ({ ...f, [key]: value }))
+    setErrors((prev) => {
+      if (!(key in prev)) return prev
+      const next = { ...prev }
+      delete next[key as string]
+      return next
+    })
+  }
+
+  const cls = (key: string) => (errors[key] ? INPUT_BASE_ERROR : INPUT_BASE)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    const result = dishSchema.safeParse(form)
+    if (!result.success) {
+      const next: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        const key = issue.path.join('.')
+        if (!(key in next)) next[key] = issue.message
+      }
+      setErrors(next)
+      toast.error(result.error.issues[0].message)
+      return
+    }
+    setErrors({})
     setSaving(true)
     try {
       if (dish?.id) {
-        await updateDish(dish.id, form)
+        await updateDish(dish.id, result.data)
         toast.success('Блюдо обновлено')
       } else {
-        await createDish(form)
+        await createDish(result.data)
         toast.success('Блюдо добавлено')
       }
       onClose()
@@ -62,20 +88,20 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
             <label className="block text-sm font-medium text-neutral-700">Название</label>
             <input
               type="text"
-              required
               value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className={INPUT_BASE}
+              onChange={(e) => patch('name', e.target.value)}
+              className={cls('name')}
             />
+            {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-neutral-700">Описание</label>
             <textarea
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) => patch('description', e.target.value)}
               rows={2}
-              className={INPUT_BASE}
+              className={cls('description')}
             />
           </div>
 
@@ -84,20 +110,20 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
               <label className="block text-sm font-medium text-neutral-700">Вес</label>
               <input
                 type="number"
-                required
                 min={0}
                 step="any"
                 value={form.weight}
-                onChange={(e) => setForm({ ...form, weight: parseFloat(e.target.value) || 0 })}
-                className={INPUT_BASE}
+                onChange={(e) => patch('weight', parseFloat(e.target.value) || 0)}
+                className={cls('weight')}
               />
+              {errors.weight && <p className="mt-1 text-xs text-red-600">{errors.weight}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700">Единица</label>
               <select
                 value={form.weightUnit}
-                onChange={(e) => setForm({ ...form, weightUnit: e.target.value })}
-                className={INPUT_BASE}
+                onChange={(e) => patch('weightUnit', e.target.value)}
+                className={cls('weightUnit')}
               >
                 <option value="г">г</option>
                 <option value="мл">мл</option>
@@ -109,23 +135,22 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
               <label className="block text-sm font-medium text-neutral-700">Цена</label>
               <input
                 type="number"
-                required
                 min={0}
                 step="any"
                 value={form.defaultPrice}
-                onChange={(e) => setForm({ ...form, defaultPrice: parseFloat(e.target.value) || 0 })}
-                className={INPUT_BASE}
+                onChange={(e) => patch('defaultPrice', parseFloat(e.target.value) || 0)}
+                className={cls('defaultPrice')}
               />
+              {errors.defaultPrice && <p className="mt-1 text-xs text-red-600">{errors.defaultPrice}</p>}
             </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-neutral-700">Категория</label>
             <select
-              required
               value={form.categoryId}
-              onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-              className={INPUT_BASE}
+              onChange={(e) => patch('categoryId', e.target.value)}
+              className={cls('categoryId')}
             >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
@@ -133,11 +158,12 @@ export default function DishForm({ dish, categories, onClose }: DishFormProps) {
                 </option>
               ))}
             </select>
+            {errors.categoryId && <p className="mt-1 text-xs text-red-600">{errors.categoryId}</p>}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-1">Фото</label>
-            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} />
+            <ImageUpload value={form.image} onChange={(url) => patch('image', url)} />
           </div>
 
           <div className="flex justify-end gap-3 pt-2">

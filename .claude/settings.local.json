@@ -15,7 +15,8 @@
       "Bash(npm install:*)",
       "Bash(npx prisma:*)",
       "WebSearch",
-      "WebFetch(domain:unsplash.com)"
+      "WebFetch(domain:unsplash.com)",
+      "Bash(node -p \"require\\('./node_modules/zod/package.json'\\).version\")"
     ]
   }
 }
